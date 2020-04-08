@@ -11,7 +11,7 @@ on:
 
 jobs:
   dev-tools:
-    name: Quality Check -- ${{ matrix.os }}
+    name: ${{ matrix.os }} / Quality Check
     runs-on: ${{ matrix.os }}-latest
 
     strategy:
@@ -49,3 +49,40 @@ jobs:
 
     # Main check
     - run: python -m tox -e "lint,docs,vendoring"
+
+  tests:
+    name: ${{ matrix.os }} / Tests ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}-latest
+
+    needs: dev-tools
+
+    strategy:
+      matrix:
+        os: [Ubuntu, MacOS]
+        python: [2.7, 3.5, 3.6, 3.7, 3.8, pypy, pypy3]
+        tox-arguments:
+        - '-n auto -m unit'
+        - '-n auto -m integration --duration=5'
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+
+    # Setup Caching
+    - name: pip cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('tools/requirements/tests.txt') }}-${{ hashFiles('tools/requirements/docs.txt') }}-${{ hashFiles('tox.ini') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+
+    # Get the latest tox
+    - name: Install tox
+      run: python -m pip install tox
+
+    # Main check
+    - run: python -m tox -e py -- ${{ matrix.tox-arguments }}
