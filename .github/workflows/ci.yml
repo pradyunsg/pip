@@ -1,25 +1,22 @@
-name: Linting
+name: CI
 
 on:
   push:
+    branches:
+    - master
   pull_request:
   schedule:
   # Run every Friday at 18:02 UTC
   - cron: 2 18 * * 5
 
 jobs:
-  lint:
-    name: ${{ matrix.os }}
+  dev-tools:
+    name: ${{ matrix.os }} (dev tools)
     runs-on: ${{ matrix.os }}-latest
-    env:
-      TOXENV: lint,docs,vendoring
 
     strategy:
       matrix:
-        os:
-        - Ubuntu
-        - Windows
-        - MacOS
+        os: [Ubuntu, Windows, MacOS]
 
     steps:
     - uses: actions/checkout@v2
