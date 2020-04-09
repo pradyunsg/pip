@@ -28,7 +28,7 @@ steps:
   displayName: Install Tox
 
 # Lots of fun logic, for... running the correct tests.
-- ${{ if in(parameters.testGroup, null, 1) }}:
+- ${{ if in(parameters.testGroup, 'unit', 1) }}:
   - script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
     env:
       TEMP: "R:\\Temp"

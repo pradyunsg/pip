@@ -89,4 +89,4 @@ jobs:
   steps:
   - template: ../steps/run-tests-windows.yml
     parameters:
-      testGroup: null
+      testGroup: unit
