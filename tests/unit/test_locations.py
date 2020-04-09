@@ -94,20 +94,23 @@ class TestDistutilsScheme:
     @pytest.mark.incompatible_with_venv
     def test_distutils_config_file_read(self, tmpdir, monkeypatch):
         # This deals with nt/posix path differences
-        install_scripts = os.path.normcase(os.path.abspath(
-            os.path.join(os.path.sep, 'somewhere', 'else')))
+        install_scripts = os.path.normcase(
+            os.path.abspath(os.path.join(os.path.sep, 'somewhere', 'else'))
+        )
+
         f = tmpdir / "config" / "setup.cfg"
         f.parent.mkdir()
         f.write_text("[install]\ninstall-scripts=" + install_scripts)
-        from distutils.dist import Distribution
+
         # patch the function that returns what config files are present
+        from distutils.dist import Distribution
         monkeypatch.setattr(
             Distribution,
             'find_config_files',
             lambda self: [f],
         )
         scheme = distutils_scheme('example')
-        assert scheme['scripts'] == install_scripts
+        assert scheme['scripts'] == install_scripts, scheme
 
     @pytest.mark.incompatible_with_venv
     # when we request install-lib, we should install everything (.py &
