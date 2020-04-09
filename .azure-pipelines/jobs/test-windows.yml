@@ -2,7 +2,7 @@ parameters:
   vmImage:
 
 jobs:
-- job: Test_Primary
+- job: Tests_Primary_one
   displayName: Tests / Windows /
 
   pool:
@@ -12,38 +12,24 @@ jobs:
       "2.7-x86 / 1":
         python.version: '2.7'
         python.architecture: x86
-        testGroup: one
-      "2.7-x86 / 2":
-        python.version: '2.7'
-        python.architecture: x86
-        testGroup: two
       "2.7 / 1":
         python.version: '2.7'
         python.architecture: x64
-        testGroup: one
-      "2.7 / 2":
-        python.version: '2.7'
-        python.architecture: x64
-        testGroup: two
       "3.8 / 1":
         python.version: '3.8'
         python.architecture: x64
-        testGroup: one
-      "3.8 / 2":
-        python.version: '3.8'
-        python.architecture: x64
-        testGroup: two
 
   steps:
   - template: ../steps/run-tests-windows.yml
     parameters:
-      testGroup: '$(testGroup)'
+      testGroup: one
 
 - job: Test_Secondary
   displayName: Tests / Windows /
   # Don't run integration tests for these runs
-  # Run after Test_Primary so we don't devour time and jobs if tests are going to fail
-  dependsOn: Test_Primary
+  # Run after Test_Primary_* so we don't devour time and jobs.
+  dependsOn:
+  - Test_Primary_one
 
   pool:
     vmImage: ${{ parameters.vmImage }}
