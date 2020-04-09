@@ -24,12 +24,35 @@ jobs:
     parameters:
       testGroup: one
 
+- job: Tests_Primary_two
+  displayName: Tests / Windows /
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  strategy:
+    matrix:
+      "2.7-x86 / 2":
+        python.version: '2.7'
+        python.architecture: x86
+      "2.7 / 2":
+        python.version: '2.7'
+        python.architecture: x64
+      "3.8 / 2":
+        python.version: '3.8'
+        python.architecture: x64
+
+  steps:
+  - template: ../steps/run-tests-windows.yml
+    parameters:
+      testGroup: two
+
 - job: Test_Secondary
   displayName: Tests / Windows /
   # Don't run integration tests for these runs
   # Run after Test_Primary_* so we don't devour time and jobs.
   dependsOn:
   - Test_Primary_one
+  - Test_Primary_two
 
   pool:
     vmImage: ${{ parameters.vmImage }}
