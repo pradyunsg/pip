@@ -25,30 +25,6 @@ jobs:
         python.version: '2.7'
         python.architecture: x64
         testGroup: 2
-      "3.5 / 1":
-        python.version: '3.5'
-        python.architecture: x64
-        testGroup: 1
-      "3.5 / 2":
-        python.version: '3.5'
-        python.architecture: x64
-        testGroup: 2
-      "3.6 / 1":
-        python.version: '3.6'
-        python.architecture: x64
-        testGroup: 1
-      "3.6 / 2":
-        python.version: '3.6'
-        python.architecture: x64
-        testGroup: 2
-      "3.7 / 1":
-        python.version: '3.7'
-        python.architecture: x64
-        testGroup: 1
-      "3.7 / 2":
-        python.version: '3.7'
-        python.architecture: x64
-        testGroup: 2
       "3.8 / 1":
         python.version: '3.8'
         python.architecture: x64
@@ -73,6 +49,15 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
   strategy:
     matrix:
+      3.5:
+        python.version: '3.5'
+        python.architecture: x64
+      3.6:
+        python.version: '3.6'
+        python.architecture: x64
+      3.7:
+        python.version: '3.7'
+        python.architecture: x64
       3.5-x86:
         python.version: '3.5'
         python.architecture: x86
