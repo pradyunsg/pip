@@ -1,5 +1,5 @@
 parameters:
-  testGroup:
+  testGroup: unit
 
 steps:
 - task: UsePythonVersion@0
