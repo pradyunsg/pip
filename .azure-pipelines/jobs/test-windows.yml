@@ -37,7 +37,7 @@ jobs:
   steps:
   - template: ../steps/run-tests-windows.yml
     parameters:
-      testGroup: $(testGroup)
+      testGroup: '$(testGroup)'
 
 - job: Test_Secondary
   displayName: Tests / Windows /
