@@ -2,7 +2,7 @@ parameters:
   vmImage:
 
 jobs:
-- job: Tests_Primary_one
+- job: Test_Primary_one
   displayName: Tests / Windows /
 
   pool:
@@ -24,7 +24,7 @@ jobs:
     parameters:
       testGroup: one
 
-- job: Tests_Primary_two
+- job: Test_Primary_two
   displayName: Tests / Windows /
 
   pool:
