@@ -12,27 +12,27 @@ jobs:
       "2.7-x86 / 1":
         python.version: '2.7'
         python.architecture: x86
-        testGroup: 1
+        testGroup: one
       "2.7-x86 / 2":
         python.version: '2.7'
         python.architecture: x86
-        testGroup: 2
+        testGroup: two
       "2.7 / 1":
         python.version: '2.7'
         python.architecture: x64
-        testGroup: 1
+        testGroup: one
       "2.7 / 2":
         python.version: '2.7'
         python.architecture: x64
-        testGroup: 2
+        testGroup: two
       "3.8 / 1":
         python.version: '3.8'
         python.architecture: x64
-        testGroup: 1
+        testGroup: one
       "3.8 / 2":
         python.version: '3.8'
         python.architecture: x64
-        testGroup: 2
+        testGroup: two
 
   steps:
   - template: ../steps/run-tests-windows.yml
