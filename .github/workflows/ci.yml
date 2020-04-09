@@ -11,7 +11,7 @@ on:
 
 jobs:
   dev-tools:
-    name: ${{ matrix.os }} / Quality Check
+    name: Quality Check / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
 
     strategy:
@@ -51,7 +51,7 @@ jobs:
     - run: python -m tox -e "lint,docs"
 
   packaging:
-    name: ${{ matrix.os }} / Packaging
+    name: Packaging / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
 
     strategy:
@@ -95,7 +95,7 @@ jobs:
       run: nox -s build-release -- 99.9
 
   tests:
-    name: ${{ matrix.os }} / Tests / ${{ matrix.python }}
+    name: Tests (${{ matrix.python }}) / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
 
     needs: dev-tools
