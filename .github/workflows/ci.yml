@@ -48,7 +48,41 @@ jobs:
       run: python -m pip install tox
 
     # Main check
-    - run: python -m tox -e "lint,docs,vendoring"
+    - run: python -m tox -e "lint,docs"
+
+  vendoring:
+    name: ${{ matrix.os }} / Vendoring
+    runs-on: ${{ matrix.os }}-latest
+
+    needs: dev-tools
+
+    strategy:
+      matrix:
+        os: [Ubuntu, Windows, MacOS]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+
+    # Setup Caching
+    - name: pip cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('tools/requirements/tests.txt') }}-${{ hashFiles('tools/requirements/docs.txt') }}-${{ hashFiles('tox.ini') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+
+    # Get the latest tox
+    - name: Install tox
+      run: python -m pip install tox
+
+    # Main check
+    - run: python -m tox -e "vendoring"
 
   tests:
     name: ${{ matrix.os }} / Tests / ${{ matrix.python }}
