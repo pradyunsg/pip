@@ -54,8 +54,6 @@ jobs:
     name: ${{ matrix.os }} / Packaging
     runs-on: ${{ matrix.os }}-latest
 
-    needs: dev-tools
-
     strategy:
       matrix:
         os: [Ubuntu, Windows, MacOS]
