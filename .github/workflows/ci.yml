@@ -50,8 +50,8 @@ jobs:
     # Main check
     - run: python -m tox -e "lint,docs"
 
-  vendoring:
-    name: ${{ matrix.os }} / Vendoring
+  packaging:
+    name: ${{ matrix.os }} / Packaging
     runs-on: ${{ matrix.os }}-latest
 
     needs: dev-tools
@@ -77,12 +77,24 @@ jobs:
           ${{ runner.os }}-pip-
           ${{ runner.os }}-
 
+    - name: Set up git credentials
+      run: |
+        git config --global user.email "pypa-dev@googlegroups.com"
+        git config --global user.name "pip"
+
     # Get the latest tox
     - name: Install tox
       run: python -m pip install tox
 
     # Main check
-    - run: python -m tox -e "vendoring"
+    - name: Check vendored packages
+      run: python -m tox -e "vendoring"
+
+    - name: Prepare dummy release
+      run: nox -s prepare-release -- 99.9
+
+    - name: Generate distributions for the dummy release
+      run: nox -s build-release -- 99.9
 
   tests:
     name: ${{ matrix.os }} / Tests / ${{ matrix.python }}
