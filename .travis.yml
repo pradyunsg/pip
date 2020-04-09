@@ -8,18 +8,19 @@ addons:
     - bzr
 
 stages:
-- primary
-- secondary
-- experimental
+- Quality Checks
+- PyPy on Ubuntu
+- Experimental
 
 jobs:
   include:
     # Basic Checks
-    - stage: primary
+    - stage: Quality Checks
       env: TOXENV=docs
     - env: TOXENV=lint
+
     # PyPy
-    - stage: secondary
+    - stage: PyPy on Ubuntu
       env: GROUP=1
       python: pypy3.5-7.0.0
     - env: GROUP=2
@@ -31,7 +32,7 @@ jobs:
 
     # Test experimental stuff that are not part of the standard pip usage.
     # Helpful for developers working on them to see how they're doing.
-    - stage: experimental
+    - stage: Experimental
       env:
       - GROUP=1
       - PIP_UNSTABLE_FEATURE=resolver
@@ -41,7 +42,7 @@ jobs:
 
   fast_finish: true
   allow_failures:
-    - stage: experimental
+    - stage: Experimental
 
 before_install: tools/travis/setup.sh
 install: travis_retry tools/travis/install.sh
