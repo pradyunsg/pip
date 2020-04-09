@@ -9,51 +9,51 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
   strategy:
     matrix:
-      "2.7-x86 (1)":
+      "2.7-x86 / 1":
         python.version: '2.7'
         python.architecture: x86
         testGroup: 1
-      "2.7-x86 (2)":
+      "2.7-x86 / 2":
         python.version: '2.7'
         python.architecture: x86
         testGroup: 2
-      "2.7 (1)":
+      "2.7 / 1":
         python.version: '2.7'
         python.architecture: x64
         testGroup: 1
-      "2.7 (2)":
+      "2.7 / 2":
         python.version: '2.7'
         python.architecture: x64
         testGroup: 2
-      "3.5 (1)":
+      "3.5 / 1":
         python.version: '3.5'
         python.architecture: x64
         testGroup: 1
-      "3.5 (2)":
+      "3.5 / 2":
         python.version: '3.5'
         python.architecture: x64
         testGroup: 2
-      "3.6 (1)":
+      "3.6 / 1":
         python.version: '3.6'
         python.architecture: x64
         testGroup: 1
-      "3.6 (2)":
+      "3.6 / 2":
         python.version: '3.6'
         python.architecture: x64
         testGroup: 2
-      "3.7 (1)":
+      "3.7 / 1":
         python.version: '3.7'
         python.architecture: x64
         testGroup: 1
-      "3.7 (2)":
+      "3.7 / 2":
         python.version: '3.7'
         python.architecture: x64
         testGroup: 2
-      "3.8 (1)":
+      "3.8 / 1":
         python.version: '3.8'
         python.architecture: x64
         testGroup: 1
-      "3.8 (2)":
+      "3.8 / 2":
         python.version: '3.8'
         python.architecture: x64
         testGroup: 2
