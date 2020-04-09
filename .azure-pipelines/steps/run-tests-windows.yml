@@ -2,51 +2,41 @@ parameters:
   testGroup: unit
 
 steps:
-- task: UsePythonVersion@0
-  displayName: Use Python $(python.version)
-  inputs:
-    versionSpec: '$(python.version)'
-    architecture: '$(python.architecture)'
+# - task: UsePythonVersion@0
+#   displayName: Use Python $(python.version)
+#   inputs:
+#     versionSpec: '$(python.version)'
+#     architecture: '$(python.architecture)'
 
-- task: PowerShell@2
-  inputs:
-    filePath: .azure-pipelines/scripts/New-RAMDisk.ps1
-    arguments: "-Drive R -Size 1GB"
-  displayName: Setup RAMDisk
+# - task: PowerShell@2
+#   inputs:
+#     filePath: .azure-pipelines/scripts/New-RAMDisk.ps1
+#     arguments: "-Drive R -Size 1GB"
+#   displayName: Setup RAMDisk
 
-- powershell: |
-    mkdir R:\Temp
-    $acl = Get-Acl "R:\Temp"
-    $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
-        "Everyone", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow"
-    )
-    $acl.AddAccessRule($rule)
-    Set-Acl "R:\Temp" $acl
-  displayName: Set RAMDisk Permissions
+# - powershell: |
+#     mkdir R:\Temp
+#     $acl = Get-Acl "R:\Temp"
+#     $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+#         "Everyone", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow"
+#     )
+#     $acl.AddAccessRule($rule)
+#     Set-Acl "R:\Temp" $acl
+#   displayName: Set RAMDisk Permissions
 
-- bash: pip install --upgrade 'virtualenv<20' setuptools tox
-  displayName: Install Tox
+# - bash: pip install --upgrade 'virtualenv<20' setuptools tox
+#   displayName: Install Tox
 
 # Lots of fun logic, for... running the correct tests.
 - ${{ if in(parameters.testGroup, 'unit', 'one') }}:
-  - script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
+  - script: echo "unit tests?"
     env:
       TEMP: "R:\\Temp"
     displayName: Run unit tests
 
 - ${{ if in(parameters.testGroup, 'one', 'two') }}:
   - powershell: |
-      # Fix Git SSL errors
-      pip install certifi
-      python -m certifi > cacert.txt
-      $env:GIT_SSL_CAINFO = $(Get-Content cacert.txt)
-
-      # Shorten paths to get under MAX_PATH or else integration tests will fail
-      # https://bugs.python.org/issue18199
-      $env:TEMP = "R:\Temp"
-
-      pip install tox
-      tox -e py -- -k $env:SELECTOR -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
+      python -m "import sys; print(sys.argv)" $env:SELECTOR
     env:
       ${{ if eq(parameters.testGroup, 'one') }}:
         SELECTOR: "not test_install"
@@ -54,9 +44,9 @@ steps:
         SELECTOR: "test_install"
     displayName: Run integration tests
 
-- task: PublishTestResults@2
-  displayName: Publish Test Results
-  inputs:
-    testResultsFiles: junit/*.xml
-    testRunTitle: 'Python $(python.version)'
-  condition: succeededOrFailed()
+# - task: PublishTestResults@2
+#   displayName: Publish Test Results
+#   inputs:
+#     testResultsFiles: junit/*.xml
+#     testRunTitle: 'Python $(python.version)'
+#   condition: succeededOrFailed()
