@@ -102,7 +102,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [Ubuntu, MacOS]
+        os: [Windows, Ubuntu, MacOS]
         python: [2.7, 3.5, 3.6, 3.7, 3.8]
 
     steps:
