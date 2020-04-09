@@ -1,21 +1,21 @@
 parameters:
   runIntegrationTests:
-  useVenv: false
 
 steps:
-- task: UsePythonVersion@0
-  displayName: Use Python $(python.version)
+- displayName: Use Python $(python.version)
+  task: UsePythonVersion@0
   inputs:
     versionSpec: '$(python.version)'
     architecture: '$(python.architecture)'
 
-- task: PowerShell@2
+- displayName: Setup RAMDisk
+  task: PowerShell@2
   inputs:
     filePath: .azure-pipelines/scripts/New-RAMDisk.ps1
     arguments: "-Drive R -Size 1GB"
-  displayName: Setup RAMDisk
 
-- powershell: |
+- displayName: Set RAMDisk Permissions
+  powershell: |
     mkdir R:\Temp
     $acl = Get-Acl "R:\Temp"
     $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
@@ -23,18 +23,18 @@ steps:
     )
     $acl.AddAccessRule($rule)
     Set-Acl "R:\Temp" $acl
-  displayName: Set RAMDisk Permissions
 
-- bash: pip install --upgrade 'virtualenv<20' setuptools tox
-  displayName: Install Tox
+- displayName: Install Tox
+  bash: pip install --upgrade 'virtualenv<20' setuptools tox
 
-- script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
+- displayName: Run unit tests
+  script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
   env:
     TEMP: "R:\\Temp"
-  displayName: Tox run unit tests
 
 - ${{ if eq(parameters.runIntegrationTests, 'true') }}:
-  - powershell: |
+  - displayName: Run integration tests
+    powershell: |
       # Fix Git SSL errors
       pip install certifi tox
       python -m certifi > cacert.txt
@@ -44,14 +44,10 @@ steps:
       # https://bugs.python.org/issue18199
       $env:TEMP = "R:\Temp"
 
-      tox -e py -- $env:USE_VENV_ARG -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
-    displayName: Tox run integration tests
-    env:
-      ${{ if eq(parameters.useVenv, 'true') }}:
-        USE_VENV_ARG: "--use-venv"
+      tox -e py -- -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
 
-- task: PublishTestResults@2
-  displayName: Publish Test Results
+- displayName: Publish Test Results
+  task: PublishTestResults@2
   inputs:
     testResultsFiles: junit/*.xml
     testRunTitle: 'Python $(python.version)'
