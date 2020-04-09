@@ -1,21 +1,20 @@
 parameters:
-  runIntegrationTests:
+  testGroup:
 
 steps:
-- displayName: Use Python $(python.version)
-  task: UsePythonVersion@0
+- task: UsePythonVersion@0
+  displayName: Use Python $(python.version)
   inputs:
     versionSpec: '$(python.version)'
     architecture: '$(python.architecture)'
 
-- displayName: Setup RAMDisk
-  task: PowerShell@2
+- task: PowerShell@2
   inputs:
     filePath: .azure-pipelines/scripts/New-RAMDisk.ps1
     arguments: "-Drive R -Size 1GB"
+  displayName: Setup RAMDisk
 
-- displayName: Set RAMDisk Permissions
-  powershell: |
+- powershell: |
     mkdir R:\Temp
     $acl = Get-Acl "R:\Temp"
     $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
@@ -23,20 +22,22 @@ steps:
     )
     $acl.AddAccessRule($rule)
     Set-Acl "R:\Temp" $acl
+  displayName: Set RAMDisk Permissions
 
-- displayName: Install Tox
-  bash: pip install --upgrade 'virtualenv<20' setuptools tox
+- bash: pip install --upgrade 'virtualenv<20' setuptools tox
+  displayName: Install Tox
 
-- displayName: Run unit tests
-  script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
-  env:
-    TEMP: "R:\\Temp"
+# Lots of fun logic, for... running the correct tests.
+- ${{ if in(parameters.testGroup, null, 1) }}:
+  - script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
+    env:
+      TEMP: "R:\\Temp"
+    displayName: Run unit tests
 
-- ${{ if eq(parameters.runIntegrationTests, 'true') }}:
-  - displayName: Run integration tests
-    powershell: |
+- ${{ if eq(parameters.testGroup, 1) }}:
+  - powershell: |
       # Fix Git SSL errors
-      pip install certifi tox
+      pip install certifi
       python -m certifi > cacert.txt
       $env:GIT_SSL_CAINFO = $(Get-Content cacert.txt)
 
@@ -44,10 +45,27 @@ steps:
       # https://bugs.python.org/issue18199
       $env:TEMP = "R:\Temp"
 
-      tox -e py -- -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
+      pip install tox
+      tox -e py -- -k "not test_install" -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
+    displayName: Run integration tests (1)
 
-- displayName: Publish Test Results
-  task: PublishTestResults@2
+- ${{ if eq(parameters.testGroup, 2) }}:
+  - powershell: |
+      # Fix Git SSL errors
+      pip install certifi
+      python -m certifi > cacert.txt
+      $env:GIT_SSL_CAINFO = $(Get-Content cacert.txt)
+
+      # Shorten paths to get under MAX_PATH or else integration tests will fail
+      # https://bugs.python.org/issue18199
+      $env:TEMP = "R:\Temp"
+
+      pip install tox
+      tox -e py -- -k "test_install" -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
+    displayName: Run integration tests (2)
+
+- task: PublishTestResults@2
+  displayName: Publish Test Results
   inputs:
     testResultsFiles: junit/*.xml
     testRunTitle: 'Python $(python.version)'
