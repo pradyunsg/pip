@@ -94,7 +94,7 @@ jobs:
       run: nox -s build-release -- 99.9
 
   tests:
-    name: Tests (${{ matrix.python }}) / ${{ matrix.os }}
+    name: Tests / ${{ matrix.python }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
 
     needs: dev-tools
