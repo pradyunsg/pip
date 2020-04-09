@@ -127,6 +127,15 @@ jobs:
 
     # Main check
     - name: Run unit tests
-      run: python -m tox -e py -- -n auto -m unit
+      run: >-
+        python -m tox -e py --
+        -m unit
+        --verbose
+        --numprocesses auto
     - name: Run integration tests
-      run: python -m tox -e py -- -n auto -m integration --duration=5
+      run: >-
+        python -m tox -e py --
+        -m integration
+        --verbose
+        --numprocesses auto
+        --duration=5
