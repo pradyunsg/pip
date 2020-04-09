@@ -1,5 +1,10 @@
 parameters:
-  testGroup: unit
+- name: testGroup
+  type: string
+  values:
+  - unit
+  - one
+  - two
 
 steps:
 # - task: UsePythonVersion@0
