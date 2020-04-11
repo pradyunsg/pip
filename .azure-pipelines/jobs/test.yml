@@ -3,7 +3,7 @@ parameters:
   osName:
 
 jobs:
-- job: Test_Primary
+- job: Test_Primary_${{ parameters.osName }}
   displayName: Tests / ${{ parameters.osName }} /
 
   pool:
@@ -20,10 +20,10 @@ jobs:
   steps:
   - template: ../steps/run-tests.yml
 
-- job: Test_Secondary
+- job: Test_Secondary_${{ parameters.osName }}
   displayName: Tests / ${{ parameters.osName }} /
   # Run after Test_Primary so we don't devour time and jobs if tests are going to fail
-  dependsOn: Test_Primary
+  dependsOn: Test_Primary_${{ parameters.osName }}
 
   pool:
     vmImage: ${{ parameters.vmImage }}

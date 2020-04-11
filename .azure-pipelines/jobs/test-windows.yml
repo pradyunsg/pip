@@ -3,7 +3,7 @@ parameters:
   osName:
 
 jobs:
-- job: Test_Primary_one
+- job: Test_Primary_${{ parameters.osName }}_one
   displayName: Tests / ${{ parameters.osName }} /
 
   pool:
@@ -25,7 +25,7 @@ jobs:
     parameters:
       testGroup: one
 
-- job: Test_Primary_two
+- job: Test_Primary_${{ parameters.osName }}_two
   displayName: Tests / ${{ parameters.osName }} /
 
   pool:
@@ -47,13 +47,13 @@ jobs:
     parameters:
       testGroup: two
 
-- job: Test_Secondary
+- job: Test_Secondary_${{ parameters.osName }}
   displayName: Tests / ${{ parameters.osName }} /
   # Don't run integration tests for these runs
   # Run after Test_Primary_* so we don't devour time and jobs.
   dependsOn:
-  - Test_Primary_one
-  - Test_Primary_two
+  - Test_Primary_${{ parameters.osName }}_one
+  - Test_Primary_${{ parameters.osName }}_two
 
   pool:
     vmImage: ${{ parameters.vmImage }}
