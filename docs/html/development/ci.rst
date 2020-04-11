@@ -79,13 +79,13 @@ Current run tests
 Developer tasks
 ---------------
 
-======== =============== ================ ================== ============
-   OS          docs            lint           vendoring        packages
-======== =============== ================ ================== ============
-Linux     Travis, Github  Travis, Github    Travis, Github      Azure
-Windows                                                         Azure
-MacOS                                                           Azure
-======== =============== ================ ================== ============
+======== =============== ================ ================== =================
+   OS          docs            lint           vendoring           packages
+======== =============== ================ ================== =================
+Linux     Travis, Github  Travis, Github    Travis, Github     Azure, Github
+Windows       Github          Github            Github         Azure, Github
+MacOS         Github          Github            Github         Azure, Github
+======== =============== ================ ================== =================
 
 Actual testing
 --------------
@@ -135,15 +135,15 @@ Actual testing
 |           |          +-------+---------------+-----------------+
 |           |          | PyPy3 |               |                 |
 |   Linux   +----------+-------+---------------+-----------------+
-|           |          | CP2.7 | Travis,Azure  |  Travis,Azure   |
+|           |          | CP2.7 | Travis,Azure,GitHub | Travis,Azure,GitHub |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.5 | Travis,Azure  |  Travis,Azure   |
+|           |          | CP3.5 | Travis,Azure,GitHub | Travis,Azure,GitHub |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.6 | Travis,Azure  |  Travis,Azure   |
+|           |          | CP3.6 | Travis,Azure,GitHub | Travis,Azure,GitHub |
 |           |          +-------+---------------+-----------------+
-|           |   x64    | CP3.7 | Travis,Azure  |  Travis,Azure   |
+|           |   x64    | CP3.7 | Travis,Azure,GitHub | Travis,Azure,GitHub |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.8 |   Travis      |   Travis        |
+|           |          | CP3.8 | Travis,Azure,GitHub | Travis,Azure,GitHub |
 |           |          +-------+---------------+-----------------+
 |           |          | PyPy  |   Travis      |   Travis        |
 |           |          +-------+---------------+-----------------+
