@@ -18,7 +18,6 @@ jobs:
     - stage: primary
       env: TOXENV=docs
     - env: TOXENV=lint
-    - env: TOXENV=vendoring
 
     # Complete checking for ensuring compatibility
     # PyPy
