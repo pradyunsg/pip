@@ -79,13 +79,13 @@ Current run tests
 Developer tasks
 ---------------
 
-======== =============== ================ ================== =================
-   OS          docs            lint           vendoring           packages
-======== =============== ================ ================== =================
-Linux     Travis, Github  Travis, Github    Travis, Github     Azure, Github
-Windows       Github          Github            Github         Azure, Github
-MacOS         Github          Github            Github         Azure, Github
-======== =============== ================ ================== =================
+======== =============== ================ ================== ==========
+   OS          docs            lint           vendoring       packages
+======== =============== ================ ================== ==========
+Linux     Travis, Github  Travis, Github    Travis, Github     Github
+Windows       Github          Github            Github         Github
+MacOS         Github          Github            Github         Github
+======== =============== ================ ================== ==========
 
 Actual testing
 --------------
@@ -109,11 +109,11 @@ Actual testing
 |  Windows  +----------+-------+---------------+-----------------+
 |           |          | CP2.7 |   Azure       |   Azure         |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.5 |   Azure       |   Azure         |
+|           |          | CP3.5 |   Azure       |                 |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.6 |   Azure       |   Azure         |
+|           |          | CP3.6 |   Azure       |                 |
 |           |          +-------+---------------+-----------------+
-|           |   x64    | CP3.7 |   Azure       |   Azure         |
+|           |   x64    | CP3.7 |   Azure       |                 |
 |           |          +-------+---------------+-----------------+
 |           |          | CP3.8 |   Azure       |   Azure         |
 |           |          +-------+---------------+-----------------+
@@ -135,15 +135,15 @@ Actual testing
 |           |          +-------+---------------+-----------------+
 |           |          | PyPy3 |               |                 |
 |   Linux   +----------+-------+---------------+-----------------+
-|           |          | CP2.7 | Travis,Azure,GitHub | Travis,Azure,GitHub |
+|           |          | CP2.7 | Travis,GitHub |  Travis,GitHub  |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.5 | Travis,Azure,GitHub | Travis,Azure,GitHub |
+|           |          | CP3.5 | Travis,GitHub |  Travis,GitHub  |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.6 | Travis,Azure,GitHub | Travis,Azure,GitHub |
+|           |          | CP3.6 | Travis,GitHub |  Travis,GitHub  |
 |           |          +-------+---------------+-----------------+
-|           |   x64    | CP3.7 | Travis,Azure,GitHub | Travis,Azure,GitHub |
+|           |   x64    | CP3.7 | Travis,GitHub |  Travis,GitHub  |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.8 | Travis,Azure,GitHub | Travis,Azure,GitHub |
+|           |          | CP3.8 | Travis,GitHub |  Travis,GitHub  |
 |           |          +-------+---------------+-----------------+
 |           |          | PyPy  |   Travis      |   Travis        |
 |           |          +-------+---------------+-----------------+
