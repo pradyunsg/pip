@@ -1,5 +1,10 @@
 parameters:
-  runIntegrationTests:
+- name: testGroup
+  type: string
+  values:
+  - unit
+  - one
+  - two
 
 steps:
 - task: UsePythonVersion@0
@@ -27,15 +32,17 @@ steps:
 - bash: pip install --upgrade 'virtualenv<20' setuptools tox
   displayName: Install Tox
 
-- script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
-  env:
-    TEMP: "R:\\Temp"
-  displayName: Tox run unit tests
+# Lots of fun logic, for... running the correct tests.
+- ${{ if in(parameters.testGroup, 'unit', 'one') }}:
+  - script: tox -e py -- -m unit -n auto --junit-xml=junit/unit-test.xml
+    env:
+      TEMP: "R:\\Temp"
+    displayName: Run unit tests
 
-- ${{ if eq(parameters.runIntegrationTests, 'true') }}:
+- ${{ if in(parameters.testGroup, 'one', 'two') }}:
   - powershell: |
       # Fix Git SSL errors
-      pip install certifi tox
+      pip install certifi
       python -m certifi > cacert.txt
       $env:GIT_SSL_CAINFO = $(Get-Content cacert.txt)
 
@@ -43,8 +50,14 @@ steps:
       # https://bugs.python.org/issue18199
       $env:TEMP = "R:\Temp"
 
-      tox -e py -- -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
-    displayName: Tox run integration tests
+      pip install tox
+      tox -e py -- -k $env:SELECTOR -m integration -n auto --duration=5 --junit-xml=junit/integration-test.xml
+    env:
+      ${{ if eq(parameters.testGroup, 'one') }}:
+        SELECTOR: "not test_install"
+      ${{ if eq(parameters.testGroup, 'two') }}:
+        SELECTOR: "test_install"
+    displayName: Run integration tests
 
 - task: PublishTestResults@2
   displayName: Publish Test Results
