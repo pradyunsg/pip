@@ -1,9 +1,10 @@
 parameters:
   vmImage:
+  osName:
 
 jobs:
 - job: Test_Primary_one
-  displayName: Tests / Windows /
+  displayName: Tests / ${{ parameters.osName }} /
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -25,7 +26,7 @@ jobs:
       testGroup: one
 
 - job: Test_Primary_two
-  displayName: Tests / Windows /
+  displayName: Tests / ${{ parameters.osName }} /
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -47,7 +48,7 @@ jobs:
       testGroup: two
 
 - job: Test_Secondary
-  displayName: Tests / Windows /
+  displayName: Tests / ${{ parameters.osName }} /
   # Don't run integration tests for these runs
   # Run after Test_Primary_* so we don't devour time and jobs.
   dependsOn:
