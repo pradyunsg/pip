@@ -79,13 +79,13 @@ Current run tests
 Developer tasks
 ---------------
 
-======== =============== ================ ================== ==========
-   OS          docs            lint           vendoring       packages
-======== =============== ================ ================== ==========
-Linux     Travis, Github  Travis, Github    Travis, Github     Github
-Windows       Github          Github            Github         Github
-MacOS         Github          Github            Github         Github
-======== =============== ================ ================== ==========
+======== =============== ================ =========== ==========
+   OS          docs            lint        vendoring   packages
+======== =============== ================ =========== ==========
+Linux     Travis, Github  Travis, Github    Github      Github
+Windows       Github          Github        Github      Github
+MacOS         Github          Github        Github      Github
+======== =============== ================ =========== ==========
 
 Actual testing
 --------------
@@ -135,15 +135,15 @@ Actual testing
 |           |          +-------+---------------+-----------------+
 |           |          | PyPy3 |               |                 |
 |   Linux   +----------+-------+---------------+-----------------+
-|           |          | CP2.7 | Travis,GitHub |  Travis,GitHub  |
+|           |          | CP2.7 |   GitHub      |   GitHub        |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.5 | Travis,GitHub |  Travis,GitHub  |
+|           |          | CP3.5 |   GitHub      |   GitHub        |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.6 | Travis,GitHub |  Travis,GitHub  |
+|           |          | CP3.6 |   GitHub      |   GitHub        |
 |           |          +-------+---------------+-----------------+
-|           |   x64    | CP3.7 | Travis,GitHub |  Travis,GitHub  |
+|           |   x64    | CP3.7 |   GitHub      |   GitHub        |
 |           |          +-------+---------------+-----------------+
-|           |          | CP3.8 | Travis,GitHub |  Travis,GitHub  |
+|           |          | CP3.8 |   GitHub      |   GitHub        |
 |           |          +-------+---------------+-----------------+
 |           |          | PyPy  |   Travis      |   Travis        |
 |           |          +-------+---------------+-----------------+
