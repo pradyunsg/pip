@@ -15,7 +15,6 @@ jobs:
       "2.7":
         python.version: '2.7'
         python.architecture: x64
-        useVenv: true
       "3.8":
         python.version: '3.8'
         python.architecture: x64
@@ -25,7 +24,6 @@ jobs:
   - template: ../steps/run-tests-windows.yml
     parameters:
       runIntegrationTests: true
-      useVenv: '$(useVenv)'
 
 - job: Test_Secondary
   displayName: Tests / Windows /
