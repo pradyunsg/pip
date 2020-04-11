@@ -16,16 +16,6 @@ jobs:
         python.version: '2.7'
         python.architecture: x64
         useVenv: true
-      "3.5":
-        python.version: '3.5'
-        python.architecture: x64
-      "3.6":
-        python.version: '3.6'
-        python.architecture: x64
-        useVenv: true
-      "3.7":
-        python.version: '3.7'
-        python.architecture: x64
       "3.8":
         python.version: '3.8'
         python.architecture: x64
@@ -47,7 +37,15 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
   strategy:
     matrix:
-      # This is for Windows, so test x86 builds
+      "3.5":
+        python.version: '3.5'
+        python.architecture: x64
+      "3.6":
+        python.version: '3.6'
+        python.architecture: x64
+      "3.7":
+        python.version: '3.7'
+        python.architecture: x64
       "3.5-x86":
         python.version: '3.5'
         python.architecture: x86
