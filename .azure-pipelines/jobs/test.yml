@@ -16,7 +16,6 @@ jobs:
       "3.6":
         python.version: '3.6'
         python.architecture: x64
-    maxParallel: 2
 
   steps:
   - template: ../steps/run-tests.yml
@@ -39,7 +38,6 @@ jobs:
       "3.8":
         python.version: '3.8'
         python.architecture: x64
-    maxParallel: 4
 
   steps:
   - template: ../steps/run-tests.yml
