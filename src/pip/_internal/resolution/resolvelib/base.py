@@ -56,3 +56,7 @@ class Candidate(object):
     def get_install_requirement(self):
         # type: () -> Optional[InstallRequirement]
         raise NotImplementedError("Override in subclass")
+
+    def prepare(self):
+        # type: () -> None
+        pass

@@ -78,6 +78,10 @@ class AbstractProvider(object):
         """
         raise NotImplementedError
 
+    def prepare_candidates(self, candidates):
+        """Prepare lazily evaluated candidates"""
+        raise NotImplementedError
+
 
 class AbstractResolver(object):
     """The thing that performs the actual resolution work.

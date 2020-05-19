@@ -90,6 +90,15 @@ class Criterion(object):
     def iter_requirement(self):
         return (i.requirement for i in self.information)
 
+    def iter_candidate(self):
+        """Return an iterator of candidates in the prefered order."""
+        return reversed(self.candidates)
+
+    @property
+    def prefered_candidate(self):
+        """The candidate to be tried first."""
+        return next(self.iter_candidate())
+
     def iter_parent(self):
         return (i.parent for i in self.information)
 
@@ -218,7 +227,7 @@ class Resolution(object):
 
     def _attempt_to_pin_criterion(self, name, criterion):
         causes = []
-        for candidate in reversed(criterion.candidates):
+        for candidate in criterion.iter_candidate():
             try:
                 criteria = self._get_criteria_to_update(candidate)
             except RequirementsConflicted as e:
@@ -270,6 +279,12 @@ class Resolution(object):
 
         return False
 
+    @property
+    def unsatisfied_criteria(self):
+        for item in self.state.criteria.items():
+            if not self._is_current_pin_satisfying(*item):
+                yield item
+
     def resolve(self, requirements, max_rounds):
         if self._states:
             raise RuntimeError("already resolved")
@@ -285,28 +300,27 @@ class Resolution(object):
         self._r.starting()
 
         for round_index in range(max_rounds):
+            print(f'{round_index=}')
             self._r.starting_round(round_index)
 
             self._push_new_state()
             curr = self.state
-
-            unsatisfied_criterion_items = [
-                item
-                for item in self.state.criteria.items()
-                if not self._is_current_pin_satisfying(*item)
-            ]
-
-            # All criteria are accounted for. Nothing more to pin, we are done!
-            if not unsatisfied_criterion_items:
+            try:
+                name, criterion = min(self.unsatisfied_criteria,
+                                      key=self._get_criterion_item_preference)
+            except ValueError:
+                # All criteria are accounted for.
+                # Nothing more to pin, we are done!
                 del self._states[-1]
                 self._r.ending(curr)
                 return self.state
 
+            # Prepare candidates.
+            self._p.prepare_candidates(
+                next(criterion.iter_candidate())
+                for name, criterion in self.unsatisfied_criteria)
+
             # Choose the most preferred unpinned criterion to try.
-            name, criterion = min(
-                unsatisfied_criterion_items,
-                key=self._get_criterion_item_preference,
-            )
             failure_causes = self._attempt_to_pin_criterion(name, criterion)
 
             # Backtrack if pinning fails.

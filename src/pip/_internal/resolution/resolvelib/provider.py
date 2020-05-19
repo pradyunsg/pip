@@ -4,7 +4,9 @@ from pip._vendor.resolvelib.providers import AbstractProvider
 from pip._internal.utils.typing import MYPY_CHECK_RUNNING
 
 if MYPY_CHECK_RUNNING:
-    from typing import Any, Dict, Optional, Sequence, Set, Tuple, Union
+    from typing import (
+        Any, Dict, Iterable, Optional, Sequence, Set, Tuple, Union
+    )
 
     from pip._vendor.packaging.version import _BaseVersion
 
@@ -133,3 +135,8 @@ class PipProvider(AbstractProvider):
         if self._ignore_dependencies:
             return []
         return list(candidate.iter_dependencies())
+
+    def prepare_candidates(self, candidates):
+        # type: (Iterable[Candidate]) -> None
+        for candidate in candidates:
+            candidate.prepare()

@@ -162,7 +162,7 @@ class _InstallRequirementBackedCandidate(Candidate):
         # type: () -> AbstractDistribution
         raise NotImplementedError("Override in subclass")
 
-    def _prepare(self):
+    def prepare(self):
         # type: () -> None
         if self._dist is not None:
             return
@@ -195,7 +195,6 @@ class _InstallRequirementBackedCandidate(Candidate):
     @property
     def dist(self):
         # type: () -> Distribution
-        self._prepare()
         return self._dist
 
     def _get_requires_python_specifier(self):
@@ -224,7 +223,6 @@ class _InstallRequirementBackedCandidate(Candidate):
 
     def get_install_requirement(self):
         # type: () -> Optional[InstallRequirement]
-        self._prepare()
         return self._ireq
 
 
