@@ -1,4 +1,8 @@
+from multiprocessing.dummy import Pool
+from operator import methodcaller
+
 from pip._vendor.packaging.specifiers import SpecifierSet
+from pip._vendor.requests.adapters import DEFAULT_POOLSIZE
 from pip._vendor.resolvelib.providers import AbstractProvider
 
 from pip._internal.utils.typing import MYPY_CHECK_RUNNING
@@ -138,5 +142,7 @@ class PipProvider(AbstractProvider):
 
     def prepare_candidates(self, candidates):
         # type: (Iterable[Candidate]) -> None
-        for candidate in candidates:
-            candidate.prepare()
+        pool = Pool(DEFAULT_POOLSIZE)
+        pool.map(methodcaller('prepare'), candidates)
+        pool.close()
+        pool.join()

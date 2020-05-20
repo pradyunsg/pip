@@ -2,6 +2,7 @@ from __future__ import division
 
 import itertools
 import sys
+import threading
 from signal import SIGINT, default_int_handler, signal
 
 from pip._vendor import six
@@ -84,6 +85,8 @@ class InterruptibleMixin(object):
             **kwargs
         )
 
+        if not isinstance(threading.current_thread(), threading._MainThread):
+            return
         self.original_handler = signal(SIGINT, self.handle_sigint)
 
         # If signal() returns None, the previous handler was not installed from
@@ -103,7 +106,10 @@ class InterruptibleMixin(object):
         normally, or gets interrupted.
         """
         super(InterruptibleMixin, self).finish()  # type: ignore
-        signal(SIGINT, self.original_handler)
+        try:
+            signal(SIGINT, self.original_handler)
+        except AttributeError:
+            pass
 
     def handle_sigint(self, signum, frame):  # type: ignore
         """
@@ -113,7 +119,10 @@ class InterruptibleMixin(object):
         active.
         """
         self.finish()
-        self.original_handler(signum, frame)
+        try:
+            self.original_handler(signum, frame)
+        except AttributeError:
+            pass
 
 
 class SilentBar(Bar):
