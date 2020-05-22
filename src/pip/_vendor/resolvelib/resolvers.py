@@ -95,8 +95,10 @@ class Criterion(object):
         return reversed(self.candidates)
 
     @property
-    def prefered_candidate(self):
+    def preferred_candidate(self):
         """The candidate to be tried first."""
+        # XXX: This needs not to be only one, but can be many
+        # depending on the optimization.
         return next(self.iter_candidate())
 
     def iter_parent(self):
@@ -317,7 +319,7 @@ class Resolution(object):
 
             # Prepare candidates.
             self._p.prepare_candidates(
-                next(criterion.iter_candidate())
+                criterion.preferred_candidate
                 for name, criterion in self.unsatisfied_criteria)
 
             # Choose the most preferred unpinned criterion to try.

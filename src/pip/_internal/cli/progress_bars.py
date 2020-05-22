@@ -85,7 +85,8 @@ class InterruptibleMixin(object):
             **kwargs
         )
 
-        if not isinstance(threading.current_thread(), threading._MainThread):
+        if not isinstance(threading.current_thread(),
+                          threading._MainThread):  # type: ignore
             return
         self.original_handler = signal(SIGINT, self.handle_sigint)
 
