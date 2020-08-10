@@ -61,6 +61,7 @@ jobs:
 
     - uses: pypa/gh-action-pypi-publish@master
       with:
+        repository_url: https://test.pypi.org/legacy/
         user: __token__
         password: ${{ secrets.PYPI_PASSWORD }}
 
@@ -110,6 +111,7 @@ jobs:
 
     - name: Commit the changes
       run: |
+        git checkout pradyunsg-release-automation-tests
         git add .
         git commit -m "Update to ${{ steps.tag.outputs.TAG_NAME }}"
         git tag -m "Release ${{ steps.tag.outputs.TAG_NAME }}" ${{ steps.tag.outputs.TAG_NAME }}
