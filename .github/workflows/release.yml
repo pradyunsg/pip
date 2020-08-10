@@ -1,0 +1,118 @@
+name: Release
+on:
+  push:
+    tags:
+  pull_request:
+    types: [closed]
+
+jobs:
+
+  remind-to-push-tag:
+    name: "Reminder"
+    # If the PR is merged with the "release" label.
+    if: >
+      github.event_name == "pull_request" &&
+      github.event.merged == 'true' &&
+      contains(github.event.pull_request.labels.*.name, "release")
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Remind to push the tag
+      run: >
+        jq -nc '{"body": "Please go ahead and push the tag, to publish this release."}' | \
+        curl -sSL -X POST -d @- \
+          -H "Content-Type: application/json" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/${{ github.event.pull_request.number }}/comments"
+
+  build:
+    name: "Build"
+    if: github.event_name == "tag"
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+
+    - name: Install build dependencies
+      run: pip install setuptools wheel twine
+
+    - name: Build distributions
+      run: python setup.py sdist bdist_wheel
+
+    - name: Check distributions
+      run: twine check
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: distributions
+        path: dist/
+
+  upload:
+    name: "Upload"
+    needs: build
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: distributions
+        path: dist/
+
+    - uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_PASSWORD }}
+
+  update-get-pip:
+    name: "Update get-pip.py"
+    needs: upload
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup git
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+    - name: Parse the git tag name
+      id: tag
+      run: echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
+
+    - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GET_PIP_GITHUB_TOKEN }}
+        repository: 'pypa/get-pip'
+    - uses: actions/setup-python@v2
+
+    - run: pip install invoke
+    - name: Regenerate get-pip.py
+      run: |
+        function dirty_working_directory() {
+          [[ -n $(git status -s) ]]
+        }
+
+        # We'll try 3 times.
+        for i in {1..3}; do
+          invoke generate
+          if dirty_working_directory; then
+            # We did generate the new get-pip.py
+            break
+          fi
+          echo "No changes... retrying in 10 seconds..."
+          sleep 10
+        done
+
+        # if working directory is not dirty, fail!
+        if ! dirty_working_directory; then
+          echo "ERROR: get-pip.py could not be updated."
+          exit 1
+        fi
+
+    - name: Commit the changes
+      run: |
+        git add .
+        git commit -m "Update to ${{ steps.tag.outputs.TAG_NAME }}"
+        git tag -m "Release ${{ steps.tag.outputs.TAG_NAME }}" ${{ steps.tag.outputs.TAG_NAME }}
+
+    - name: Push the changes
+      run: git push origin HEAD ${{ steps.tag.outputs.TAG_NAME }}
