@@ -145,8 +145,8 @@ def docs_live(session):
     session.install("-r", REQUIREMENTS["docs"])
     session.install("sphinx-autobuild")
 
-    session.run("sphinx-autobuild", *get_sphinx_build_args("html"))
-    session.run("sphinx-autobuild", *get_sphinx_build_args("man"))
+    session.run("sphinx-autobuild", "-a", *get_sphinx_build_args("html"))
+    session.run("sphinx-autobuild", "-a", *get_sphinx_build_args("man"))
 
 
 @nox.session
