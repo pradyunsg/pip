@@ -115,28 +115,38 @@ def test(session):
     session.run("pytest", *arguments, env={"LC_CTYPE": "en_US.UTF-8"})
 
 
+def get_sphinx_build_args(kind):
+    # Having the conf.py in the docs/html is weird but needed because we
+    # can not use a different configuration directory vs source directory
+    # on RTD currently. So, we'll pass "-c docs/html" here.
+    # See https://github.com/rtfd/readthedocs.org/issues/1543.
+    return [
+        "-W",
+        "-c", "docs/html",  # see note above
+        "-d", "docs/build/doctrees/" + kind,
+        "-b", kind,
+        "docs/" + kind,
+        "docs/build/" + kind,
+    ]
+
+
 @nox.session
 def docs(session):
     session.install("-e", ".")
     session.install("-r", REQUIREMENTS["docs"])
 
-    def get_sphinx_build_command(kind):
-        # Having the conf.py in the docs/html is weird but needed because we
-        # can not use a different configuration directory vs source directory
-        # on RTD currently. So, we'll pass "-c docs/html" here.
-        # See https://github.com/rtfd/readthedocs.org/issues/1543.
-        return [
-            "sphinx-build",
-            "-W",
-            "-c", "docs/html",  # see note above
-            "-d", "docs/build/doctrees/" + kind,
-            "-b", kind,
-            "docs/" + kind,
-            "docs/build/" + kind,
-        ]
+    session.run("sphinx-build", *get_sphinx_build_args("html"))
+    session.run("sphinx-build", *get_sphinx_build_args("man"))
 
-    session.run(*get_sphinx_build_command("html"))
-    session.run(*get_sphinx_build_command("man"))
+
+@nox.session(name="docs-live")
+def docs_live(session):
+    session.install("-e", ".")
+    session.install("-r", REQUIREMENTS["docs"])
+    session.install("sphinx-autobuild")
+
+    session.run("sphinx-autobuild", *get_sphinx_build_args("html"))
+    session.run("sphinx-autobuild", *get_sphinx_build_args("man"))
 
 
 @nox.session
