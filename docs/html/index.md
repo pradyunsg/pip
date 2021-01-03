@@ -64,4 +64,5 @@ GitHub <https://github.com/pypa/pip>
 
 [^footnote]: Certain Linux distributions do not ship `pip` as a part of their
   default Python installation, since they consider `pip` to be a non-essential
-  for using Python programs.
+  for using Python programs -- they expect their users to exclusively use the
+  OS package manager's packages, or to install pip separately.
