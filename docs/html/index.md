@@ -18,8 +18,7 @@ This documentation has 4 main sections:
 
 [Getting Started](getting-started)
 
-Get started with using pip with an explanation of the interface and basic
-capabilities.
+Get started with using pip. If you're new to Python, start here.
 
 ---
 
