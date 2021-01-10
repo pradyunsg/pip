@@ -1,6 +1,6 @@
-================
-Vendoring Policy
-================
+======================
+Vendoring Dependencies
+======================
 
 * Vendored libraries **MUST** not be modified except as required to
   successfully vendor them.
