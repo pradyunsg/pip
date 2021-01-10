@@ -6,7 +6,7 @@ It comes as a part of with all modern versions of Python and is installed
 alongside Python by default [^footnote]. It is used to download, build and
 install your projects' dependencies, and manage packages in a Python 
 environment.
- 
+
 This documentation has 4 main sections:
 
 ````{panels}
@@ -55,6 +55,7 @@ news
 :hidden:
 
 development/index
+maintainance
 ux
 GitHub <https://github.com/pypa/pip>
 ```
