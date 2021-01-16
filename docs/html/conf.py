@@ -14,6 +14,7 @@ sys.path.insert(0, docs_dir)
 
 extensions = [
     # first-party extensions
+    "sphinx.ext.autodoc",
     "sphinx.ext.todo",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
@@ -21,7 +22,7 @@ extensions = [
     "pip_sphinxext",
     # third-party extensions
     "myst_parser",
-    "sphinx_panels",
+    "sphinx_copybutton",
     "sphinx_inline_tabs",
     "sphinxcontrib.towncrier",
 ]
@@ -81,8 +82,6 @@ myst_heading_anchors = 2
 
 html_theme = "furo"
 html_title = f"{project} documentation v{release}"
-html_css_files = ["custom.css"]
-html_static_path = ["_static"]
 
 # Disable the generation of the various indexes
 html_use_modindex = False
