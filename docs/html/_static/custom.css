@@ -1,7 +1,0 @@
-.card-text:first > img {
-  height: 52px;
-}
-.card {
-  background-color: var(--color-background-secondary) !important;
-  color: var(--color-foreground-primary) !important;
-}

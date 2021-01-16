@@ -9,36 +9,18 @@ environment.
 
 This documentation has 4 main sections:
 
-````{panels}
-:container: container pb-4
-:column: col-lg-6 col-md-6 col-sm-6 col-xs-12 p-2
-:card: shadow
-
----
-
 [Getting Started](getting-started)
-
-Get started with using pip. If you're new to Python, start here.
-
----
+: Get started with using pip. If you're new to Python, start here.
 
 [Explanations](explanations)
-
-Explanations provide detailed information on key topics and concepts.
-
----
+: Explanations provide detailed information on key topics and concepts.
 
 [Reference Guide](reference)
-
-Reference Guide explains the implementation and provides an entry-point for
+: Reference Guide explains the implementation and provides an entry-point for
 pip's developers.
 
----
-
 [Commands](cli/index)
-
-Commands is a detailed description of the command line interface.
-````
+: Commands is a detailed description of the command line interface.
 
 ```{toctree}
 :hidden:
@@ -54,9 +36,9 @@ news
 :caption: Contributing
 :hidden:
 
-development/index
-maintainance
-ux
+contributing/development/index
+contributing/maintainance
+contributing/ux
 GitHub <https://github.com/pypa/pip>
 ```
 
