@@ -33,6 +33,11 @@ news
 ```
 
 ```{toctree}
+:caption: Community
+community
+```
+
+```{toctree}
 :caption: Contributing
 :hidden:
 
