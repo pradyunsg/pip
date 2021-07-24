@@ -380,23 +380,18 @@ def virtualenv_template(
     yield venv
 
 
-@pytest.fixture(scope="session")
-def virtualenv_factory(virtualenv_template):
-    def factory(tmpdir):
-        return VirtualEnvironment(tmpdir, virtualenv_template)
-
-    return factory
-
-
 @pytest.fixture
-def virtualenv(virtualenv_factory, tmpdir):
+def virtualenv(virtualenv_template, tmpdir):
     """
     Return a virtual environment which is unique to each test function
     invocation created inside of a sub directory of the test function's
     temporary directory. The returned object is a
     ``tests.lib.venv.VirtualEnvironment`` object.
     """
-    yield virtualenv_factory(tmpdir.joinpath("workspace", "venv"))
+    yield VirtualEnvironment(
+        tmpdir.joinpath("workspace", "venv"),
+        virtualenv_template,
+    )
 
 
 @pytest.fixture
@@ -404,40 +399,30 @@ def with_wheel(virtualenv, wheel_install):
     install_egg_link(virtualenv, "wheel", wheel_install)
 
 
-@pytest.fixture(scope="session")
-def script_factory(virtualenv_factory, deprecated_python):
-    def factory(tmpdir, virtualenv=None):
-        if virtualenv is None:
-            virtualenv = virtualenv_factory(tmpdir.joinpath("venv"))
-        return PipTestEnvironment(
-            # The base location for our test environment
-            tmpdir,
-            # Tell the Test Environment where our virtualenv is located
-            virtualenv=virtualenv,
-            # Do not ignore hidden files, they need to be checked as well
-            ignore_hidden=False,
-            # We are starting with an already empty directory
-            start_clear=False,
-            # We want to ensure no temporary files are left behind, so the
-            # PipTestEnvironment needs to capture and assert against temp
-            capture_temp=True,
-            assert_no_temp=True,
-            # Deprecated python versions produce an extra deprecation warning
-            pip_expect_warning=deprecated_python,
-        )
-
-    return factory
-
-
 @pytest.fixture
-def script(tmpdir, virtualenv, script_factory):
+def script(tmpdir, virtualenv, deprecated_python):
     """
     Return a PipTestEnvironment which is unique to each test function and
     will execute all commands inside of the unique virtual environment for this
     test function. The returned object is a
     ``tests.lib.PipTestEnvironment``.
     """
-    return script_factory(tmpdir.joinpath("workspace"), virtualenv)
+    return PipTestEnvironment(
+        # The base location for our test environment
+        tmpdir,
+        # Tell the Test Environment where our virtualenv is located
+        virtualenv=virtualenv,
+        # Do not ignore hidden files, they need to be checked as well
+        ignore_hidden=False,
+        # We are starting with an already empty directory
+        start_clear=False,
+        # We want to ensure no temporary files are left behind, so the
+        # PipTestEnvironment needs to capture and assert against temp
+        capture_temp=True,
+        assert_no_temp=True,
+        # Deprecated python versions produce an extra deprecation warning
+        pip_expect_warning=deprecated_python,
+    )
 
 
 @pytest.fixture(scope="session")

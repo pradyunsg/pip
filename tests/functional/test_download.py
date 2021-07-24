@@ -783,21 +783,14 @@ def test_prefer_binary_when_only_tarball_exists_req_file(script, data):
     result.did_create(Path('scratch') / 'source-1.0.tar.gz')
 
 
-@pytest.fixture(scope="session")
-def shared_script(tmpdir_factory, script_factory):
-    tmpdir = Path(str(tmpdir_factory.mktemp("download_shared_script")))
-    script = script_factory(tmpdir.joinpath("workspace"))
-    return script
-
-
-def test_download_file_url(shared_script, shared_data, tmpdir):
+def test_download_file_url(script, shared_data, tmpdir):
     download_dir = tmpdir / 'download'
     download_dir.mkdir()
     downloaded_path = download_dir / 'simple-1.0.tar.gz'
 
     simple_pkg = shared_data.packages / 'simple-1.0.tar.gz'
 
-    shared_script.pip(
+    script.pip(
         'download',
         '-d',
         str(download_dir),
@@ -810,7 +803,7 @@ def test_download_file_url(shared_script, shared_data, tmpdir):
 
 
 def test_download_file_url_existing_ok_download(
-    shared_script, shared_data, tmpdir
+    script, shared_data, tmpdir
 ):
     download_dir = tmpdir / 'download'
     download_dir.mkdir()
@@ -823,13 +816,13 @@ def test_download_file_url_existing_ok_download(
     simple_pkg = shared_data.packages / 'simple-1.0.tar.gz'
     url = "{}#sha256={}".format(path_to_url(simple_pkg), digest)
 
-    shared_script.pip('download', '-d', str(download_dir), url)
+    script.pip('download', '-d', str(download_dir), url)
 
     assert downloaded_path_bytes == downloaded_path.read_bytes()
 
 
 def test_download_file_url_existing_bad_download(
-    shared_script, shared_data, tmpdir
+    script, shared_data, tmpdir
 ):
     download_dir = tmpdir / 'download'
     download_dir.mkdir()
@@ -842,13 +835,13 @@ def test_download_file_url_existing_bad_download(
     digest = sha256(simple_pkg_bytes).hexdigest()
     url = "{}#sha256={}".format(path_to_url(simple_pkg), digest)
 
-    shared_script.pip('download', '-d', str(download_dir), url)
+    script.pip('download', '-d', str(download_dir), url)
 
     assert simple_pkg_bytes == downloaded_path.read_bytes()
 
 
 def test_download_http_url_bad_hash(
-    shared_script, shared_data, tmpdir, mock_server
+    script, shared_data, tmpdir, mock_server
 ):
     """
     If already-downloaded file has bad checksum, re-download.
@@ -869,7 +862,7 @@ def test_download_http_url_bad_hash(
     base_address = f'http://{mock_server.host}:{mock_server.port}'
     url = f"{base_address}/simple-1.0.tar.gz#sha256={digest}"
 
-    shared_script.pip('download', '-d', str(download_dir), url)
+    script.pip('download', '-d', str(download_dir), url)
 
     assert simple_pkg_bytes == downloaded_path.read_bytes()
 

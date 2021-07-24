@@ -37,13 +37,8 @@ compctl -K _pip_completion pip"""),
 )
 
 
-@pytest.fixture(scope="session")
-def script_with_launchers(
-    tmpdir_factory, script_factory, common_wheels, pip_src
-):
-    tmpdir = Path(str(tmpdir_factory.mktemp("script_with_launchers")))
-    script = script_factory(tmpdir.joinpath("workspace"))
-    # Re-install pip so we get the launchers.
+@pytest.fixture
+def script_with_launchers(script, common_wheels, pip_src):
     script.pip_install_local('-f', common_wheels, pip_src)
     return script
 
@@ -65,21 +60,15 @@ def test_completion_for_supported_shells(
     assert completion in result.stdout, str(result.stdout)
 
 
-@pytest.fixture(scope="session")
-def autocomplete_script(tmpdir_factory, script_factory):
-    tmpdir = Path(str(tmpdir_factory.mktemp("autocomplete_script")))
-    return script_factory(tmpdir.joinpath("workspace"))
-
-
 @pytest.fixture
-def autocomplete(autocomplete_script, monkeypatch):
-    monkeypatch.setattr(autocomplete_script, 'environ', os.environ.copy())
-    autocomplete_script.environ['PIP_AUTO_COMPLETE'] = '1'
+def autocomplete(script, monkeypatch):
+    monkeypatch.setattr(script, 'environ', os.environ.copy())
+    script.environ['PIP_AUTO_COMPLETE'] = '1'
 
     def do_autocomplete(words, cword, cwd=None):
-        autocomplete_script.environ['COMP_WORDS'] = words
-        autocomplete_script.environ['COMP_CWORD'] = cword
-        result = autocomplete_script.run(
+        script.environ['COMP_WORDS'] = words
+        script.environ['COMP_CWORD'] = cword
+        result = script.run(
             'python', '-c',
             'from pip._internal.cli.autocompletion import autocomplete;'
             'autocomplete()',
@@ -87,27 +76,27 @@ def autocomplete(autocomplete_script, monkeypatch):
             cwd=cwd,
         )
 
-        return result, autocomplete_script
+        return result, script
 
     return do_autocomplete
 
 
-def test_completion_for_unknown_shell(autocomplete_script):
+def test_completion_for_unknown_shell(script):
     """
     Test getting completion for an unknown shell
     """
     error_msg = 'no such option: --myfooshell'
-    result = autocomplete_script.pip(
+    result = script.pip(
         'completion', '--myfooshell', expect_error=True
     )
     assert error_msg in result.stderr, 'tests for an unknown shell failed'
 
 
-def test_completion_alone(autocomplete_script):
+def test_completion_alone(script):
     """
     Test getting completion for none shell, just pip completion
     """
-    result = autocomplete_script.pip('completion', allow_stderr_error=True)
+    result = script.pip('completion', allow_stderr_error=True)
     assert 'ERROR: You must pass --bash or --fish or --zsh' in result.stderr, \
            'completion alone failed -- ' + result.stderr
 
@@ -306,11 +295,11 @@ def test_completion_path_after_option(autocomplete, data):
 
 @pytest.mark.parametrize('flag', ['--bash', '--zsh', '--fish'])
 def test_completion_uses_same_executable_name(
-    autocomplete_script, flag, deprecated_python
+    script, flag, deprecated_python
 ):
     executable_name = 'pip{}'.format(sys.version_info[0])
     # Deprecated python versions produce an extra deprecation warning
-    result = autocomplete_script.run(
+    result = script.run(
         executable_name, 'completion', flag, expect_stderr=deprecated_python,
     )
     assert executable_name in result.stdout
