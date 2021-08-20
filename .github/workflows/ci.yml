@@ -40,10 +40,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: pre-commit/action@v2.0.0
-        with:
-          extra_args: --all-files --hook-stage=manual
+      # - uses: actions/setup-python@v2
+      # - uses: pre-commit/action@v2.0.0
+      #   with:
+      #     extra_args: --all-files --hook-stage=manual
 
   packaging:
     name: packaging
@@ -51,15 +51,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - name: Set up git credentials
-        run: |
-          git config --global user.email "pypa-dev@googlegroups.com"
-          git config --global user.name "pip"
+      # - uses: actions/setup-python@v2
+      # - name: Set up git credentials
+      #   run: |
+      #     git config --global user.email "pypa-dev@googlegroups.com"
+      #     git config --global user.name "pip"
 
-      - run: pip install nox
-      - run: nox -s prepare-release -- 99.9
-      - run: nox -s build-release -- 99.9
+      # - run: pip install nox
+      # - run: nox -s prepare-release -- 99.9
+      # - run: nox -s build-release -- 99.9
 
   vendoring:
     name: vendoring
@@ -72,11 +72,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      # - uses: actions/setup-python@v2
 
-      - run: pip install vendoring
-      - run: vendoring sync . --verbose
-      - run: git diff --exit-code
+      # - run: pip install vendoring
+      # - run: vendoring sync . --verbose
+      # - run: git diff --exit-code
 
   tests-unix:
     name: tests / ${{ matrix.python }} / ${{ matrix.os }}
@@ -88,14 +88,13 @@ jobs:
       github.event_name != 'pull_request'
 
     strategy:
-      fail-fast: false
       matrix:
         os: [Ubuntu, MacOS]
         python:
-          - 3.6
-          - 3.7
-          - 3.8
-          - 3.9
+          # - 3.6
+          # - 3.7
+          # - 3.8
+          # - 3.9
           - "3.10.0-alpha - 3.10"
 
     steps:
@@ -143,53 +142,53 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
+      # - uses: actions/setup-python@v2
+      #   with:
+      #     python-version: ${{ matrix.python }}
 
-      # We use a RAMDisk on Windows, since filesystem IO is a big slowdown
-      # for our tests.
-      - name: Create a RAMDisk
-        run: ./tools/ci/New-RAMDisk.ps1 -Drive R -Size 1GB
+      # # We use a RAMDisk on Windows, since filesystem IO is a big slowdown
+      # # for our tests.
+      # - name: Create a RAMDisk
+      #   run: ./tools/ci/New-RAMDisk.ps1 -Drive R -Size 1GB
 
-      - name: Setup RAMDisk permissions
-        run: |
-          mkdir R:\Temp
-          $acl = Get-Acl "R:\Temp"
-          $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
-              "Everyone", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow"
-          )
-          $acl.AddAccessRule($rule)
-          Set-Acl "R:\Temp" $acl
+      # - name: Setup RAMDisk permissions
+      #   run: |
+      #     mkdir R:\Temp
+      #     $acl = Get-Acl "R:\Temp"
+      #     $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+      #         "Everyone", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow"
+      #     )
+      #     $acl.AddAccessRule($rule)
+      #     Set-Acl "R:\Temp" $acl
 
-      - run: pip install tox 'virtualenv<20'
-        env:
-          TEMP: "R:\\Temp"
+      # - run: pip install tox 'virtualenv<20'
+      #   env:
+      #     TEMP: "R:\\Temp"
 
-      # Main check
-      - name: Run unit tests
-        if: matrix.group == 1
-        run: >-
-          tox -e py --
-          -m unit
-          --verbose --numprocesses auto --showlocals
-        env:
-          TEMP: "R:\\Temp"
+      # # Main check
+      # - name: Run unit tests
+      #   if: matrix.group == 1
+      #   run: >-
+      #     tox -e py --
+      #     -m unit
+      #     --verbose --numprocesses auto --showlocals
+      #   env:
+      #     TEMP: "R:\\Temp"
 
-      - name: Run integration tests (group 1)
-        if: matrix.group == 1
-        run: >-
-          tox -e py --
-          -m integration -k "not test_install"
-          --verbose --numprocesses auto --showlocals
-        env:
-          TEMP: "R:\\Temp"
+      # - name: Run integration tests (group 1)
+      #   if: matrix.group == 1
+      #   run: >-
+      #     tox -e py --
+      #     -m integration -k "not test_install"
+      #     --verbose --numprocesses auto --showlocals
+      #   env:
+      #     TEMP: "R:\\Temp"
 
-      - name: Run integration tests (group 2)
-        if: matrix.group == 2
-        run: >-
-          tox -e py --
-          -m integration -k "test_install"
-          --verbose --numprocesses auto --showlocals
-        env:
-          TEMP: "R:\\Temp"
+      # - name: Run integration tests (group 2)
+      #   if: matrix.group == 2
+      #   run: >-
+      #     tox -e py --
+      #     -m integration -k "test_install"
+      #     --verbose --numprocesses auto --showlocals
+      #   env:
+      #     TEMP: "R:\\Temp"
