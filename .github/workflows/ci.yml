@@ -87,7 +87,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [Ubuntu, MacOS]
+        # os: [Ubuntu, MacOS]
+        os: [Ubuntu]
         python:
           # - 3.6
           # - 3.7
