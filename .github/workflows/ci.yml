@@ -102,14 +102,15 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - run: pip install tox 'virtualenv<20'
+      - uses: lhotari/action-upterm@v1
 
       # Main check
-      - name: Run integration tests
-        run: >-
-          tox -e py --
-          -k test_install_prefix
-          --verbose
-          --showlocals
+      # - name: Run integration tests
+      #   run: >-
+      #     tox -e py --
+      #     -k test_install_prefix
+      #     --verbose
+      #     --showlocals
 
   # tests-windows:
   #   name: tests / ${{ matrix.python }} / ${{ matrix.os }} / ${{ matrix.group }}
