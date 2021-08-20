@@ -83,11 +83,9 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
 
     # needs: [pre-commit, packaging, determine-changes]
-    if: >-
-      needs.determine-changes.outputs.tests == 'true' ||
-      github.event_name != 'pull_request'
 
     strategy:
+      fail-fast: false
       matrix:
         os: [Ubuntu, MacOS]
         python:
