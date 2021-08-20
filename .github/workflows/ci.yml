@@ -108,7 +108,6 @@ jobs:
         run: >-
           tox -e py --
           -k test_install_prefix
-          -m integration
           --verbose
           --showlocals
 
