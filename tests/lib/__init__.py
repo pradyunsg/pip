@@ -10,6 +10,7 @@ from base64 import urlsafe_b64encode
 from contextlib import contextmanager
 from hashlib import sha256
 from io import BytesIO
+from pathlib import Path, curdir
 from textwrap import dedent
 from typing import List, Optional
 from zipfile import ZipFile
@@ -26,7 +27,6 @@ from pip._internal.models.selection_prefs import SelectionPreferences
 from pip._internal.models.target_python import TargetPython
 from pip._internal.network.session import PipSession
 from pip._internal.utils.deprecation import DEPRECATION_MSG_PREFIX
-from tests.lib.path import Path, curdir
 from tests.lib.wheel import make_wheel
 
 DATA_DIR = Path(__file__).parent.parent.joinpath("data").resolve()
@@ -63,7 +63,7 @@ def _test_path_to_file_url(path):
     Convert a test Path to a "file://" URL.
 
     Args:
-      path: a tests.lib.path.Path object.
+      path: a pathlib.Path object.
     """
     return "file://" + path.resolve().replace("\\", "/")
 

@@ -67,7 +67,7 @@ def _make_version_pkg_url(path, rev=None, name="version_pkg"):
     Return a "git+file://" URL to the version_pkg test package.
 
     Args:
-      path: a tests.lib.path.Path object pointing to a Git repository
+      path: a pathlib.Path object pointing to a Git repository
         containing the version_pkg package.
       rev: an optional revision to install like a branch name, tag, or SHA.
     """
@@ -84,7 +84,7 @@ def _install_version_pkg_only(script, path, rev=None, expect_stderr=False):
     the version).
 
     Args:
-      path: a tests.lib.path.Path object pointing to a Git repository
+      path: a pathlib.Path object pointing to a Git repository
         containing the package.
       rev: an optional revision to install like a branch name or tag.
     """
@@ -98,7 +98,7 @@ def _install_version_pkg(script, path, rev=None, expect_stderr=False):
     installed.
 
     Args:
-      path: a tests.lib.path.Path object pointing to a Git repository
+      path: a pathlib.Path object pointing to a Git repository
         containing the package.
       rev: an optional revision to install like a branch name or tag.
     """

@@ -2,6 +2,7 @@ import os
 import pathlib
 import sys
 import textwrap
+from pathlib import Path
 
 import pytest
 
@@ -12,7 +13,6 @@ from tests.lib import (
     path_to_url,
 )
 from tests.lib.direct_url import get_created_direct_url
-from tests.lib.path import Path
 from tests.lib.wheel import make_wheel
 
 
