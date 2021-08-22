@@ -249,7 +249,7 @@ def test_temp_dir_does_not_delete_explicit_paths_by_default(tmpdir, delete, exis
         registry.set_delete(deleted_kind, True)
 
         with TempDirectory(path=path, delete=delete, kind=deleted_kind) as d:
-            assert str(d.path) == path
+            assert os.fspath(d.path) == os.fspath(path)
             assert os.path.exists(path)
         assert os.path.exists(path) == exists
 

@@ -1031,8 +1031,11 @@ def test_install_package_with_root(script, data, with_wheel):
     # use distutils to change the root exactly how the --root option does it
     from distutils.util import change_root
 
-    root_path = change_root(os.path.join(script.scratch, "root"), normal_install_path)
-    result.did_create(root_path)
+    root_path = change_root(
+        os.fspath(script.scratch / "root"),
+        os.fspath(normal_install_path),
+    )
+    result.did_create(os.fspath(root_path))
 
     # Should show find-links location in output
     assert "Looking in indexes: " not in result.stdout
@@ -1057,11 +1060,10 @@ def test_install_package_with_prefix(script, data):
     )
 
     rel_prefix_path = script.scratch / "prefix"
-    install_path = (
-        distutils.sysconfig.get_python_lib(prefix=rel_prefix_path)
-        /
+    install_path = os.path.join(
+        distutils.sysconfig.get_python_lib(prefix=os.fspath(rel_prefix_path)),
         # we still test for egg-info because no-binary implies setup.py install
-        f"simple-1.0-py{pyversion}.egg-info"
+        f"simple-1.0-py{pyversion}.egg-info",
     )
     result.did_create(install_path)
 

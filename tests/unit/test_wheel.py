@@ -478,6 +478,7 @@ class TestInstallUnpackedWheel:
         wheel_path = make_wheel(
             "simple", "0.1.0", entry_points={entrypoint_type: [entrypoint]}
         ).save_to_dir(tmpdir)
+
         with pytest.raises(InstallationError) as e:
             wheel.install_wheel(
                 "simple",

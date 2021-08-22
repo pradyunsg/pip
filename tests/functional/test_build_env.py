@@ -1,3 +1,4 @@
+import os
 from textwrap import dedent
 
 import pytest
@@ -75,7 +76,7 @@ def test_build_env_allow_empty_requirements_install():
 def test_build_env_allow_only_one_install(script):
     create_basic_wheel_for_package(script, "foo", "1.0")
     create_basic_wheel_for_package(script, "bar", "1.0")
-    finder = make_test_finder(find_links=[script.scratch_path])
+    finder = make_test_finder(find_links=[os.fspath(script.scratch_path)])
     build_env = BuildEnvironment()
     for prefix in ("normal", "overlay"):
         build_env.install_requirements(

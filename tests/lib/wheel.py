@@ -2,6 +2,7 @@
 """
 import csv
 import itertools
+import os
 from base64 import urlsafe_b64encode
 from collections import namedtuple
 from copy import deepcopy
@@ -260,7 +261,7 @@ class WheelBuilder:
         """
         path = Path(path) / self._name
         path.write_bytes(self.as_bytes())
-        return str(path)
+        return os.fspath(path)
 
     def save_to(self, path: Union[Path, str]) -> str:
         """Generate wheel file, saving to the provided path. Any parent
@@ -270,7 +271,7 @@ class WheelBuilder:
         """
         path = Path(path)
         path.write_bytes(self.as_bytes())
-        return str(path)
+        return os.fspath(path)
 
     def as_bytes(self) -> bytes:
         with BytesIO() as buf:

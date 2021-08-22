@@ -59,14 +59,14 @@ class _FlatDirectorySource(LinkSource):
 
     def page_candidates(self) -> FoundCandidates:
         for path in self._path.iterdir():
-            url = path_to_url(str(path))
+            url = path_to_url(os.fspath(path))
             if not _is_html_file(url):
                 continue
             yield from self._candidates_from_page(Link(url))
 
     def file_links(self) -> FoundLinks:
         for path in self._path.iterdir():
-            url = path_to_url(str(path))
+            url = path_to_url(os.fspath(path))
             if _is_html_file(url):
                 continue
             yield Link(url)

@@ -418,7 +418,7 @@ class TestProcessLine:
         base_path = tmpdir / "path"
 
         def normalize(path):
-            return os.path.normcase(os.path.abspath(os.path.normpath(str(path))))
+            return os.path.normcase(os.path.abspath(os.path.normpath(path)))
 
         # Make sure the test also passes on windows
         req_file = normalize(base_path / "req_file.txt")
@@ -500,11 +500,11 @@ class TestProcessLine:
         Test a nested req file url in a local req file
         """
         req_name = "hello"
-        req_file = tmpdir / "req_file.txt"
+        req_file = os.fspath(tmpdir / "req_file.txt")
         nested_req_file = "http://me.com/me/req_file.txt"
 
         def get_file_content(filename, *args, **kwargs):
-            if filename == str(req_file):
+            if filename == req_file:
                 return None, f"-r {nested_req_file}"
             elif filename == nested_req_file:
                 return None, req_name
@@ -586,7 +586,7 @@ class TestParseRequirements:
 
         list(
             parse_reqfile(
-                tmpdir.joinpath("req1.txt"),
+                os.fspath(tmpdir.joinpath("req1.txt")),
                 finder=finder,
                 session=PipSession(),
                 options=options,
@@ -619,7 +619,9 @@ class TestParseRequirements:
 
             reqs = list(
                 parse_reqfile(
-                    tmpdir.joinpath("req1.txt"), finder=finder, session=session
+                    os.fspath(tmpdir.joinpath("req1.txt")),
+                    finder=finder,
+                    session=session,
                 )
             )
 
@@ -645,7 +647,9 @@ class TestParseRequirements:
 
             reqs = list(
                 parse_reqfile(
-                    tmpdir.joinpath("req1.txt"), finder=finder, session=session
+                    os.fspath(tmpdir.joinpath("req1.txt")),
+                    finder=finder,
+                    session=session,
                 )
             )
 
@@ -660,7 +664,9 @@ class TestParseRequirements:
 
         list(
             parse_reqfile(
-                tmpdir.joinpath("req1.txt"), finder=finder, session=PipSession()
+                os.fspath(tmpdir.joinpath("req1.txt")),
+                finder=finder,
+                session=PipSession(),
             )
         )
 
@@ -669,7 +675,7 @@ class TestParseRequirements:
     def test_req_file_parse_no_only_binary(self, data, finder):
         list(
             parse_reqfile(
-                data.reqfiles.joinpath("supported_options2.txt"),
+                os.fspath(data.reqfiles.joinpath("supported_options2.txt")),
                 finder=finder,
                 session=PipSession(),
             )
@@ -686,7 +692,9 @@ class TestParseRequirements:
 
         reqs = list(
             parse_reqfile(
-                tmpdir.joinpath("req1.txt"), finder=finder, session=PipSession()
+                os.fspath(tmpdir.joinpath("req1.txt")),
+                finder=finder,
+                session=PipSession(),
             )
         )
 
@@ -701,7 +709,9 @@ class TestParseRequirements:
 
         reqs = list(
             parse_reqfile(
-                tmpdir.joinpath("req1.txt"), finder=finder, session=PipSession()
+                os.fspath(tmpdir.joinpath("req1.txt")),
+                finder=finder,
+                session=PipSession(),
             )
         )
 
@@ -717,7 +727,9 @@ class TestParseRequirements:
 
         reqs = list(
             parse_reqfile(
-                tmpdir.joinpath("req1.txt"), finder=finder, session=PipSession()
+                os.fspath(tmpdir.joinpath("req1.txt")),
+                finder=finder,
+                session=PipSession(),
             )
         )
 
@@ -756,7 +768,10 @@ class TestParseRequirements:
         with requirements_file(content, tmpdir) as reqs_file:
             req = next(
                 parse_reqfile(
-                    reqs_file.resolve(), finder=finder, options=options, session=session
+                    os.fspath(reqs_file.resolve()),
+                    finder=finder,
+                    options=options,
+                    session=session,
                 )
             )
 

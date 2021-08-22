@@ -280,9 +280,9 @@ class TestPipResult:
             pkg_dir = e.site_packages / pkg_name
 
         if use_user_site:
-            egg_link_path = e.user_site / pkg_name + ".egg-link"
+            egg_link_path = os.fspath(e.user_site / (pkg_name + ".egg-link"))
         else:
-            egg_link_path = e.site_packages / pkg_name + ".egg-link"
+            egg_link_path = os.fspath(e.site_packages / (pkg_name + ".egg-link"))
 
         if without_egg_link:
             if egg_link_path in self.files_created:
@@ -301,7 +301,7 @@ class TestPipResult:
             # FIXME: I don't understand why there's a trailing . here
             if not (
                 egg_link_contents.endswith("\n.")
-                and egg_link_contents[:-2].endswith(pkg_dir)
+                and egg_link_contents[:-2].endswith(os.fspath(pkg_dir))
             ):
                 expected_ending = pkg_dir + "\n."
                 raise TestFailure(
@@ -353,16 +353,16 @@ class TestPipResult:
                 )
 
     def did_create(self, path, message=None):
-        assert str(path) in self.files_created, _one_or_both(message, self)
+        assert os.fspath(path) in self.files_created, _one_or_both(message, self)
 
     def did_not_create(self, path, message=None):
-        assert str(path) not in self.files_created, _one_or_both(message, self)
+        assert os.fspath(path) not in self.files_created, _one_or_both(message, self)
 
     def did_update(self, path, message=None):
-        assert str(path) in self.files_updated, _one_or_both(message, self)
+        assert os.fspath(path) in self.files_updated, _one_or_both(message, self)
 
     def did_not_update(self, path, message=None):
-        assert str(path) not in self.files_updated, _one_or_both(message, self)
+        assert os.fspath(path) not in self.files_updated, _one_or_both(message, self)
 
 
 def _one_or_both(a, b):
@@ -487,7 +487,7 @@ class PipTestEnvironment(TestFileEnvironment):
 
         # Setup our environment
         environ = kwargs.setdefault("environ", os.environ.copy())
-        environ["PATH"] = Path.pathsep.join(
+        environ["PATH"] = os.pathsep.join(
             [self.bin_path] + [environ.get("PATH", [])],
         )
         environ["PYTHONUSERBASE"] = self.user_base_path

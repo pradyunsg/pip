@@ -115,7 +115,7 @@ class TestRequirementSet:
         req = install_req_from_line("simple")
         req.user_supplied = True
         reqset.add_requirement(req)
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         with self._basic_resolver(finder) as resolver:
             assert_raises_regexp(
                 PreviousBuildDirError,
@@ -133,10 +133,12 @@ class TestRequirementSet:
         non-wheel installs.
         """
         reqset = RequirementSet()
-        req = install_req_from_editable(data.packages.joinpath("LocalEnvironMarker"))
+        req = install_req_from_editable(
+            os.fspath(data.packages.joinpath("LocalEnvironMarker"))
+        )
         req.user_supplied = True
         reqset.add_requirement(req)
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         with self._basic_resolver(finder) as resolver:
             reqset = resolver.resolve(reqset.all_requirements, True)
         assert not reqset.has_requirement("simple")
@@ -148,7 +150,7 @@ class TestRequirementSet:
         reqset = RequirementSet()
         reqset.add_requirement(get_processed_req_from_line("simple==1.0", lineno=1))
 
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
 
         with self._basic_resolver(finder, require_hashes=True) as resolver:
             assert_raises_regexp(
@@ -166,11 +168,11 @@ class TestRequirementSet:
         """--require-hashes in a requirements file should make its way to the
         RequirementSet.
         """
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         session = finder._link_collector.session
         command = create_command("install")
         with requirements_file("--require-hashes", tmpdir) as reqs_file:
-            options, args = command.parse_args(["-r", reqs_file])
+            options, args = command.parse_args(["-r", os.fspath(reqs_file)])
             command.get_requirements(args, options, finder, session)
         assert options.require_hashes
 
@@ -196,7 +198,7 @@ class TestRequirementSet:
                 lineno=2,
             )
         )
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
 
         sep = os.path.sep
         if sep == "\\":
@@ -239,7 +241,7 @@ class TestRequirementSet:
                 lineno=2,
             )
         )
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         with self._basic_resolver(finder, require_hashes=True) as resolver:
             assert_raises_regexp(
                 HashErrors,
@@ -262,7 +264,7 @@ class TestRequirementSet:
                 lineno=1,
             )
         )
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         with self._basic_resolver(finder, require_hashes=True) as resolver:
             assert_raises_regexp(
                 HashErrors,
@@ -280,7 +282,7 @@ class TestRequirementSet:
         """Make sure unhashed, unpinned, or otherwise unrepeatable
         dependencies get complained about when --require-hashes is on."""
         reqset = RequirementSet()
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         reqset.add_requirement(
             get_processed_req_from_line(
                 "TopoRequires2==0.0.1 "  # requires TopoRequires
@@ -385,7 +387,7 @@ class TestInstallRequirement:
     def test_unsupported_wheel_local_file_requirement_raises(self, data):
         reqset = RequirementSet()
         req = install_req_from_line(
-            data.packages.joinpath("simple.dist-0.1-py1-none-invalid.whl"),
+            os.fspath(data.packages.joinpath("simple.dist-0.1-py1-none-invalid.whl")),
         )
         assert req.link is not None
         assert req.link.is_wheel

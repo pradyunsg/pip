@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from pip._vendor.resolvelib import BaseReporter, Resolver
 
@@ -20,7 +22,7 @@ from pip._internal.utils.urls import path_to_url
 @pytest.fixture
 def test_cases(data):
     def data_file(name):
-        return data.packages.joinpath(name)
+        return os.fspath(data.packages.joinpath(name))
 
     def data_url(name):
         return path_to_url(data_file(name))

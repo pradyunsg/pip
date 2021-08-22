@@ -102,7 +102,7 @@ class TestUnpackArchives:
         Test unpacking a *.tgz, and setting execute permissions
         """
         test_file = data.packages.joinpath("test_tar.tgz")
-        untar_file(test_file, self.tempdir)
+        untar_file(os.fspath(test_file), self.tempdir)
         self.confirm_files()
         # Check the timestamp of an extracted file
         file_txt_path = os.path.join(self.tempdir, "file.txt")
@@ -150,7 +150,7 @@ class TestUnpackArchives:
         files = ["regular_file.txt", os.path.join("..", "outside_file.txt")]
         test_tar = self.make_tar_file("test_tar.tar", files)
         with pytest.raises(InstallationError) as e:
-            untar_file(test_tar, self.tempdir)
+            untar_file(os.fspath(test_tar), self.tempdir)
         assert "trying to install outside target directory" in str(e.value)
 
     def test_unpack_tar_success(self):
@@ -165,7 +165,7 @@ class TestUnpackArchives:
             os.path.join("dir", "..", "dir_file2.txt"),
         ]
         test_tar = self.make_tar_file("test_tar.tar", files)
-        untar_file(test_tar, self.tempdir)
+        untar_file(os.fspath(test_tar), self.tempdir)
 
 
 def test_unpack_tar_unicode(tmpdir):
@@ -178,7 +178,7 @@ def test_unpack_tar_unicode(tmpdir):
     output_dir = tmpdir / "output"
     output_dir.mkdir()
 
-    untar_file(test_tar, str(output_dir))
+    untar_file(os.fspath(test_tar), str(output_dir))
 
     output_dir_name = str(output_dir)
     contents = os.listdir(output_dir_name)

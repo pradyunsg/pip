@@ -1,6 +1,7 @@
 """pip sphinx extensions"""
 
 import optparse
+import os
 import pathlib
 import re
 import sys
@@ -69,7 +70,7 @@ class PipNewsInclude(rst.Directive):
             convert_whitespace=True,
         )
         include_lines = list(self._iter_lines_with_refs(include_lines))
-        self.state_machine.insert_input(include_lines, str(path))
+        self.state_machine.insert_input(include_lines, os.fspath(path))
         return []
 
 
@@ -253,7 +254,7 @@ class PipCLIDirective(rst.Directive):
 
         lines = []
         # Create a tab for each OS
-        for os, variant in os_variants.items():
+        for platform, variant in os_variants.items():
 
             # Unpack the values
             prompt = variant["prompt"]
@@ -281,7 +282,7 @@ class PipCLIDirective(rst.Directive):
                 content = re.sub(pattern, substitution, content)
 
             # Write the tab
-            lines.append(f"````{{tab}} {os}")
+            lines.append(f"````{{tab}} {platform}")
             lines.append(f"```{highlighter}")
             lines.append(f"{content}")
             lines.append("```")

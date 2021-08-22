@@ -75,9 +75,9 @@ def test_requirements_file(script, with_wheel):
     result = script.pip("install", "-r", script.scratch_path / "initools-req.txt")
     result.did_create(script.site_packages / "INITools-0.2.dist-info")
     result.did_create(script.site_packages / "initools")
-    assert result.files_created[script.site_packages / other_lib_name].dir
+    assert result.files_created[os.fspath(script.site_packages / other_lib_name)].dir
     fn = "{}-{}.dist-info".format(other_lib_name, other_lib_version)
-    assert result.files_created[script.site_packages / fn].dir
+    assert result.files_created[os.fspath(script.site_packages / fn)].dir
 
 
 def test_schema_check_in_requirements_file(script):
@@ -173,9 +173,9 @@ def test_multiple_requirements_files(script, tmpdir, with_wheel):
         f"{other_lib_name}<={other_lib_version}"
     )
     result = script.pip("install", "-r", script.scratch_path / "initools-req.txt")
-    assert result.files_created[script.site_packages / other_lib_name].dir
+    assert result.files_created[os.fspath(script.site_packages / other_lib_name)].dir
     fn = f"{other_lib_name}-{other_lib_version}.dist-info"
-    assert result.files_created[script.site_packages / fn].dir
+    assert result.files_created[os.fspath(script.site_packages / fn)].dir
     result.did_create(script.venv / "src" / "initools")
 
 

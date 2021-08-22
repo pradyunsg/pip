@@ -438,7 +438,7 @@ def test_freeze_git_remote(script, tmpdir):
     _check_output(result.stdout, expected)
     # When the remote is a local path, it must exist.
     # If it doesn't, it gets flagged as invalid.
-    other_remote = pkg_version + "-other"
+    other_remote = os.fspath(pkg_version) + "-other"
     script.run("git", "remote", "set-url", "other", other_remote, cwd=repo_dir)
     result = script.pip("freeze", expect_stderr=True)
     expected = os.path.normcase(

@@ -1,4 +1,5 @@
 import logging
+import os
 from unittest.mock import Mock, patch
 
 import pytest
@@ -40,7 +41,7 @@ def make_no_network_finder(
 
 def test_no_mpkg(data):
     """Finder skips zipfiles with "macosx10" in the name."""
-    finder = make_test_finder(find_links=[data.find_links])
+    finder = make_test_finder(find_links=[os.fspath(data.find_links)])
     req = install_req_from_line("pkgwithmpkg")
     found = finder.find_requirement(req, False)
 
@@ -49,7 +50,7 @@ def test_no_mpkg(data):
 
 def test_no_partial_name_match(data):
     """Finder requires the full project name to match, not just beginning."""
-    finder = make_test_finder(find_links=[data.find_links])
+    finder = make_test_finder(find_links=[os.fspath(data.find_links)])
     req = install_req_from_line("gmpy")
     found = finder.find_requirement(req, False)
 
@@ -71,7 +72,12 @@ def test_tilde():
 def test_duplicates_sort_ok(data):
     """Finder successfully finds one of a set of duplicates in different
     locations"""
-    finder = make_test_finder(find_links=[data.find_links, data.find_links2])
+    finder = make_test_finder(
+        find_links=[
+            os.fspath(data.find_links),
+            os.fspath(data.find_links2),
+        ]
+    )
     req = install_req_from_line("duplicate")
     found = finder.find_requirement(req, False)
 
@@ -81,7 +87,7 @@ def test_duplicates_sort_ok(data):
 def test_finder_detects_latest_find_links(data):
     """Test PackageFinder detects latest using find-links"""
     req = install_req_from_line("simple", None)
-    finder = make_test_finder(find_links=[data.find_links])
+    finder = make_test_finder(find_links=[os.fspath(data.find_links)])
     found = finder.find_requirement(req, False)
     assert found.link.url.endswith("simple-3.0.tar.gz")
 
@@ -89,7 +95,7 @@ def test_finder_detects_latest_find_links(data):
 def test_incorrect_case_file_index(data):
     """Test PackageFinder detects latest using wrong case"""
     req = install_req_from_line("dinner", None)
-    finder = make_test_finder(index_urls=[data.find_links3])
+    finder = make_test_finder(index_urls=[os.fspath(data.find_links3)])
     found = finder.find_requirement(req, False)
     assert found.link.url.endswith("Dinner-2.0.tar.gz")
 
@@ -106,7 +112,7 @@ def test_finder_detects_latest_already_satisfied_find_links(data):
         version=latest_version,
     )
     req.satisfied_by = satisfied_by
-    finder = make_test_finder(find_links=[data.find_links])
+    finder = make_test_finder(find_links=[os.fspath(data.find_links)])
 
     with pytest.raises(BestVersionAlreadyInstalled):
         finder.find_requirement(req, True)
@@ -139,7 +145,7 @@ class TestWheel:
 
         req = install_req_from_line("invalid")
         # data.find_links contains "invalid.whl", which is an invalid wheel
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         with pytest.raises(DistributionNotFound):
             finder.find_requirement(req, True)
 
@@ -154,7 +160,7 @@ class TestWheel:
         # Make sure no tags will match.
         target_python._valid_tags = []
         finder = make_test_finder(
-            find_links=[data.find_links],
+            find_links=[os.fspath(data.find_links)],
             target_python=target_python,
         )
 
@@ -172,7 +178,7 @@ class TestWheel:
         )
 
         req = install_req_from_line("simple.dist")
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         found = finder.find_requirement(req, True)
         assert found.link.url.endswith("simple.dist-0.1-py2.py3-none-any.whl"), found
 
@@ -182,7 +188,7 @@ class TestWheel:
         `test_link_sorting` also covers this at lower level
         """
         req = install_req_from_line("priority")
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
         found = finder.find_requirement(req, True)
         assert found.link.url.endswith("priority-1.0-py2.py3-none-any.whl"), found
 
@@ -199,7 +205,7 @@ class TestWheel:
             version=latest_version,
         )
         req.satisfied_by = satisfied_by
-        finder = make_test_finder(find_links=[data.find_links])
+        finder = make_test_finder(find_links=[os.fspath(data.find_links)])
 
         with pytest.raises(BestVersionAlreadyInstalled):
             finder.find_requirement(req, True)
@@ -323,7 +329,7 @@ def test_finder_priority_file_over_page(data):
     """Test PackageFinder prefers file links over equivalent page links"""
     req = install_req_from_line("gmpy==1.15", None)
     finder = make_test_finder(
-        find_links=[data.find_links],
+        find_links=[os.fspath(data.find_links)],
         index_urls=["http://pypi.org/simple/"],
     )
     all_versions = finder.find_all_candidates(req.name)
@@ -537,7 +543,7 @@ def test_find_all_candidates_nothing():
 
 
 def test_find_all_candidates_find_links(data):
-    finder = make_test_finder(find_links=[data.find_links])
+    finder = make_test_finder(find_links=[os.fspath(data.find_links)])
     versions = finder.find_all_candidates("simple")
     assert [str(v.version) for v in versions] == ["3.0", "2.0", "1.0"]
 
@@ -550,7 +556,7 @@ def test_find_all_candidates_index(data):
 
 def test_find_all_candidates_find_links_and_index(data):
     finder = make_test_finder(
-        find_links=[data.find_links],
+        find_links=[os.fspath(data.find_links)],
         index_urls=[data.index_url("simple")],
     )
     versions = finder.find_all_candidates("simple")

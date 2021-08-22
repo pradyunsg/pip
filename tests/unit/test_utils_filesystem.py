@@ -42,7 +42,7 @@ skip_on_windows = pytest.mark.skipif("sys.platform == 'win32'")
 )
 def test_is_socket(create, result, tmpdir):
     target = tmpdir.joinpath("target")
-    create(target)
+    create(os.fspath(target))
     assert os.path.lexists(target)
     assert is_socket(target) == result
 

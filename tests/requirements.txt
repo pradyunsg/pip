@@ -3,6 +3,7 @@ freezegun
 pretend
 pytest
 pytest-cov
+pytest-html
 pytest-rerunfailures
 pytest-xdist
 scripttest

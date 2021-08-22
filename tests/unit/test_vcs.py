@@ -196,7 +196,7 @@ def test_git_remote_local_path(tmpdir):
     path = pathlib.Path(tmpdir, "project.git")
     path.mkdir()
     # Path must exist to be recognised as a local git remote.
-    assert Git._git_remote_to_pip_url(str(path)) == path.as_uri()
+    assert Git._git_remote_to_pip_url(os.fspath(path)) == path.as_uri()
 
 
 @patch("pip._internal.vcs.git.Git.get_remote_url")
