@@ -10,7 +10,7 @@ from base64 import urlsafe_b64encode
 from contextlib import contextmanager
 from hashlib import sha256
 from io import BytesIO
-from pathlib import Path, curdir
+from pathlib import Path
 from textwrap import dedent
 from typing import List, Optional
 from zipfile import ZipFile
@@ -325,8 +325,8 @@ class TestPipResult:
             maybe = "" if without_egg_link else "not "
             raise TestFailure(f"{pth_file} unexpectedly {maybe}updated by install")
 
-        if (pkg_dir in self.files_created) == (curdir in without_files):
-            maybe = "not " if curdir in without_files else ""
+        if (pkg_dir in self.files_created) == (os.curdir in without_files):
+            maybe = "not " if os.curdir in without_files else ""
             files = sorted(self.files_created)
             raise TestFailure(
                 textwrap.dedent(
