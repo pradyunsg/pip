@@ -3,14 +3,18 @@
 import locale
 import logging
 import os
+import shutil
 import sys
 from typing import List, Optional
+
+from pip._vendor import colorama
 
 from pip._internal.cli.autocompletion import autocomplete
 from pip._internal.cli.main_parser import parse_command
 from pip._internal.commands import create_command
 from pip._internal.exceptions import PipError
 from pip._internal.utils import deprecation
+from pip._internal.utils.virtualenv import running_under_virtualenv
 
 logger = logging.getLogger(__name__)
 
@@ -42,10 +46,7 @@ logger = logging.getLogger(__name__)
 # main, this should not be an issue in practice.
 
 
-def main(args: Optional[List[str]] = None) -> int:
-    if args is None:
-        args = sys.argv[1:]
-
+def _main(args: List[str]) -> int:
     # Configure our deprecation warnings to be sent through loggers
     deprecation.install_warning_logger()
 
@@ -68,3 +69,43 @@ def main(args: Optional[List[str]] = None) -> int:
     command = create_command(cmd_name, isolated=("--isolated" in cmd_args))
 
     return command.main(cmd_args)
+
+
+def _determine_expected_interpreter_name() -> str:
+    return "pip3.6", "python3.9"
+
+
+def _check_for_mismatching_interpreter_on_PATH():
+    # Don't perform this check when it's running in a virtualenv. They're
+    # assumed to be sane environments.
+    if running_under_virtualenv():
+        # return
+        pass
+
+    # Look for the executable
+    pip_name, executable_name = _determine_expected_interpreter_name()
+    first_python_found = shutil.which(executable_name)
+
+    if first_python_found is None:
+        return (
+            f"Could not find a matching Python executable ({executable_name}) "
+            f"for `{pip_name}`."
+        )
+
+    found = os.path.normpath(first_python_found)
+    expected = os.path.normpath(executable_name)
+    if found != expected:
+        return (
+            f"There is a mismatch between '{pip_name}' and '{executable_name} -m pip'."
+        )
+
+
+def main(args: Optional[List[str]] = None) -> int:
+    mismatch_reason = _check_for_mismatching_interpreter_on_PATH()
+    if mismatch_reason:
+        print("WARNING: ", mismatch_reason)
+
+    if args is None:
+        args = sys.argv[1:]
+
+    return _main(args)

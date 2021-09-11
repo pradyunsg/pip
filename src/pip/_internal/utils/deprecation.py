@@ -42,13 +42,18 @@ def _showwarning(
 
 
 def install_warning_logger() -> None:
-    # Enable our Deprecation Warnings
-    warnings.simplefilter("default", PipDeprecationWarning, append=True)
+    """Setup warnings module, to always print pip's deprecation warnings.
 
+    This function may be called multiple times without consequence -- only the
+    first call will modify the warning module.
+    """
     global _original_showwarning
 
+    # Enable our Deprecation Warnings
     if _original_showwarning is None:
         _original_showwarning = warnings.showwarning
+
+        warnings.simplefilter("default", PipDeprecationWarning, append=True)
         warnings.showwarning = _showwarning
 
 
