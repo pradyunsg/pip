@@ -344,9 +344,9 @@ class InstallCommand(RequirementCommand):
             except KeyError:
                 modifying_pip = False
             else:
-                # If we're not replacing an already installed pip,
-                # we're not modifying it.
-                modifying_pip = pip_req.satisfied_by is None
+                # If we're replacing an already installed pip, we're modifying it.
+                modifying_pip = pip_req.satisfied_by is not None
+
             protect_pip_from_modification_on_windows(modifying_pip=modifying_pip)
 
             check_binary_allowed = get_check_binary_allowed(finder.format_control)

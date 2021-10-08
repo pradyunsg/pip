@@ -1,5 +1,6 @@
 import itertools
 import os
+import sys
 import textwrap
 
 import pytest
@@ -396,3 +397,12 @@ def test_install_find_existing_package_canonicalize(script, req1, req2):
     )
     satisfied_message = f"Requirement already satisfied: {req2}"
     assert satisfied_message in result.stdout, str(result)
+
+
+@pytest.mark.network
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows-only test")
+def test_modifying_pip_presents_error(script):
+    result = script.pip("install", "pip", "--force-reinstall", expect_error=True)
+
+    assert "python.exe" in result.stderr, str(result)
+    assert " -m " in result.stderr, str(result)
