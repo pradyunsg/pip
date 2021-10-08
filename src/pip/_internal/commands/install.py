@@ -340,12 +340,20 @@ class InstallCommand(RequirementCommand):
             )
 
             try:
+                print(1)
                 pip_req = requirement_set.get_requirement("pip")
             except KeyError:
+                print(2)
                 modifying_pip = False
             else:
+                print(3)
                 # If we're replacing an already installed pip, we're modifying it.
                 modifying_pip = pip_req.satisfied_by is not None
+
+            import sys
+
+            print(4, sys.argv[0])
+            print(4, modifying_pip)
 
             protect_pip_from_modification_on_windows(modifying_pip=modifying_pip)
 
