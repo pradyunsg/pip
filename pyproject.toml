@@ -50,6 +50,11 @@ drop = [
   "setuptools",
   "pkg_resources/_vendor/",
   "pkg_resources/extern/",
+  # trim vendored pygments styles and lexers
+  "pygments/styles/[!_]*.py",
+  '^pygments/lexers/(?!python|__init__).*\.py$',
+  # trim rich's markdown support
+  "rich/markdown.py",
 ]
 
 [tool.vendoring.typing-stubs]
