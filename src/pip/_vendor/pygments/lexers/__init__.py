@@ -8,10 +8,10 @@
     :license: BSD, see LICENSE for details.
 """
 
+import fnmatch
 import re
 import sys
 import types
-import fnmatch
 from os.path import basename
 
 from pip._vendor.pygments.lexers._mapping import LEXERS
@@ -41,6 +41,8 @@ def _fn_matches(fn, glob):
 
 def _load_lexers(module_name):
     """Load a lexer (and all others in the module too)."""
+    if module_name.startswith("pygments"):
+        module_name = "pip._vendor." + module_name
     mod = __import__(module_name, None, None, ['__all__'])
     for lexer_name in mod.__all__:
         cls = getattr(mod, lexer_name)

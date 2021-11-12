@@ -52,7 +52,7 @@ drop = [
   "pkg_resources/extern/",
   # trim vendored pygments styles and lexers
   "pygments/styles/[!_]*.py",
-  '^pygments/lexers/(?!python|__init__).*\.py$',
+  '^pygments/lexers/(?!python|__init__|_mapping).*\.py$',
   # trim rich's markdown support
   "rich/markdown.py",
 ]

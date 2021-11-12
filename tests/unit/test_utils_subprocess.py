@@ -7,7 +7,7 @@ from typing import List, Optional, Tuple, Type
 import pytest
 
 from pip._internal.cli.spinners import SpinnerInterface
-from pip._internal.exceptions import InstallationSubprocessError
+from pip._internal.exceptions import SubprocessError
 from pip._internal.utils.logging import VERBOSE
 from pip._internal.utils.misc import hide_value
 from pip._internal.utils.subprocess import (
@@ -339,7 +339,7 @@ class TestCallSubprocess:
         command = 'print("Hello"); print("world"); exit("fail")'
         args, spinner = self.prepare_call(caplog, log_level, command=command)
 
-        with pytest.raises(InstallationSubprocessError) as exc:
+        with pytest.raises(SubprocessError) as exc:
             call_subprocess(
                 args,
                 command_desc="test info logging with subprocess error",
@@ -447,7 +447,7 @@ class TestCallSubprocess:
             # log level is only WARNING.
             (0, True, None, WARNING, (None, "done", 2)),
             # Test a non-zero exit status.
-            (3, False, None, INFO, (InstallationSubprocessError, "error", 2)),
+            (3, False, None, INFO, (SubprocessError, "error", 2)),
             # Test a non-zero exit status also in extra_ok_returncodes.
             (3, False, (3,), INFO, (None, "done", 2)),
         ],
@@ -489,7 +489,7 @@ class TestCallSubprocess:
         assert spinner.spin_count == expected_spin_count
 
     def test_closes_stdin(self) -> None:
-        with pytest.raises(InstallationSubprocessError):
+        with pytest.raises(SubprocessError):
             call_subprocess(
                 [sys.executable, "-c", "input()"],
                 show_stdout=True,

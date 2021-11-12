@@ -1,4 +1,9 @@
-"""Exceptions used throughout package"""
+"""Exceptions used throughout package.
+
+This module MUST NOT try to import from anything within `pip._internal` to
+operate. This is expected to be importable from any/all files within the
+subpackage and, thus, should not depend on them.
+"""
 
 import configparser
 import re
@@ -8,6 +13,7 @@ from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
 from pip._vendor.pkg_resources import Distribution
 from pip._vendor.requests.models import Request, Response
 from pip._vendor.rich.console import Console, ConsoleOptions, RenderResult
+from pip._vendor.rich.markup import escape
 from pip._vendor.rich.text import Text
 
 if TYPE_CHECKING:
@@ -358,18 +364,74 @@ class MetadataInconsistent(InstallationError):
         return template.format(self.ireq, self.field, self.f_val, self.m_val)
 
 
-class InstallationSubprocessError(InstallationError):
-    """A subprocess call failed during installation."""
+class SubprocessError(DiagnosticPipError):
+    """A subprocess call failed."""
 
-    def __init__(self, returncode: int, description: str) -> None:
-        self.returncode = returncode
-        self.description = description
+    reference = "subprocess-exited-with-error"
 
-    def __str__(self) -> str:
-        return (
-            "Command errored out with exit status {}: {} "
-            "Check the logs for full command output."
-        ).format(self.returncode, self.description)
+    def __init__(
+        self,
+        *,
+        command: str,
+        command_description: str,
+        exit_code: int,
+        working_directory: str,
+        output_lines: Optional[List[str]],
+        show_full_command: bool,
+    ) -> None:
+        if output_lines is None:
+            output_prompt = Text("See above for output.")
+        else:
+            output_prompt = (
+                Text.from_markup(f"[magenta][{len(output_lines)} lines of output][/]\n")
+                + Text("".join(output_lines))
+                + Text.from_markup(R"[magenta]\[end of output][/]")
+            )
+
+        if show_full_command:
+            description = command
+        else:
+            description = command_description
+
+        super().__init__(
+            message=(
+                f"[green]{escape(description)}[/] did not run successfully.\n"
+                f"working directory: {escape(working_directory)}\n"
+                f"exit code: {exit_code}"
+            ),
+            context=output_prompt,
+            hint_stmt=None,
+            attention_stmt=(
+                "This error is caused by a tool that pip has called, and not by pip."
+            ),
+        )
+
+        self.command_description = command_description
+        self.exit_code = exit_code
+
+    def __str__(self):
+        return f"{self.command_description} exited with {self.exit_code}"
+
+
+class MetadataSubprocessFailure(SubprocessError):
+    def __init__(
+        self,
+        *,
+        command: str,
+        command_description: str,
+        exit_code: int,
+        working_directory: str,
+        output_lines: Optional[List[str]],
+        show_full_command: bool,
+    ) -> None:
+        super().__init__(
+            command,
+            command_description,
+            exit_code,
+            working_directory,
+            output_lines,
+            show_full_command,
+        )
 
 
 class HashErrors(InstallationError):

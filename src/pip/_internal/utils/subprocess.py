@@ -14,7 +14,7 @@ from typing import (
 )
 
 from pip._internal.cli.spinners import SpinnerInterface, open_spinner
-from pip._internal.exceptions import InstallationSubprocessError
+from pip._internal.exceptions import SubprocessError
 from pip._internal.utils.logging import VERBOSE, subprocess_logger
 from pip._internal.utils.misc import HiddenText
 
@@ -239,17 +239,17 @@ def call_subprocess(
             spinner.finish("done")
     if proc_had_error:
         if on_returncode == "raise":
-            if not showing_subprocess and log_failed_cmd:
-                # Then the subprocess streams haven't been logged to the
-                # console yet.
-                msg = make_subprocess_output_error(
-                    cmd_args=cmd,
-                    cwd=cwd,
-                    lines=all_output,
-                    exit_status=proc.returncode,
-                )
-                subprocess_logger.error(msg)
-            raise InstallationSubprocessError(proc.returncode, command_desc)
+            error = SubprocessError(
+                command=format_command_args(cmd),
+                command_description=command_desc,
+                exit_code=proc.returncode,
+                working_directory=cwd,
+                output_lines=all_output if not showing_subprocess else None,
+                show_full_command=log_failed_cmd,
+            )
+            subprocess_logger.error("[present-diagnostic]", error)
+
+            raise error
         elif on_returncode == "warn":
             subprocess_logger.warning(
                 'Command "%s" had error code %s in %s',

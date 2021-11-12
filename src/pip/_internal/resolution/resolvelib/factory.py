@@ -27,7 +27,7 @@ from pip._internal.cache import CacheEntry, WheelCache
 from pip._internal.exceptions import (
     DistributionNotFound,
     InstallationError,
-    InstallationSubprocessError,
+    SubprocessError,
     MetadataInconsistent,
     UnsupportedPythonVersion,
     UnsupportedWheel,
@@ -45,6 +45,7 @@ from pip._internal.req.req_install import (
 from pip._internal.resolution.base import InstallRequirementProvider
 from pip._internal.utils.compatibility_tags import get_supported
 from pip._internal.utils.hashes import Hashes
+from pip._internal.utils.logging import indent_log
 from pip._internal.utils.packaging import get_requirement
 from pip._internal.utils.virtualenv import running_under_virtualenv
 
@@ -190,8 +191,9 @@ class Factory:
                         name=name,
                         version=version,
                     )
-                except (InstallationSubprocessError, MetadataInconsistent) as e:
-                    logger.warning("Discarding %s. %s", link, e)
+                except (SubprocessError, MetadataInconsistent) as e:
+                    with indent_log():
+                        logger.info("Discarding due to build failure: %s", e)
                     self._build_failures[link] = e
                     return None
             base: BaseCandidate = self._editable_candidate_cache[link]
@@ -205,8 +207,9 @@ class Factory:
                         name=name,
                         version=version,
                     )
-                except (InstallationSubprocessError, MetadataInconsistent) as e:
-                    logger.warning("Discarding %s. %s", link, e)
+                except (SubprocessError, MetadataInconsistent) as e:
+                    with indent_log():
+                        logger.info("Discarding due to build failure: %s", e)
                     self._build_failures[link] = e
                     return None
             base = self._link_candidate_cache[link]

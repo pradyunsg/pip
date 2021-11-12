@@ -4,30 +4,23 @@ import logging
 import logging.handlers
 import os
 import sys
+import threading
 from logging import Filter
-from typing import IO, Any, Callable, Iterator, Optional, TextIO, Type, cast
+from typing import IO, Any, Iterator, Optional, TextIO, Type
 
+from pip._vendor.rich.console import Console
+from pip._vendor.rich.highlighter import NullHighlighter
+from pip._vendor.rich.logging import RichHandler
+from pip._vendor.rich.padding import Padding
+
+from pip._internal.exceptions import DiagnosticPipError
 from pip._internal.utils._log import VERBOSE, getLogger
 from pip._internal.utils.compat import WINDOWS
 from pip._internal.utils.deprecation import DEPRECATION_MSG_PREFIX
 from pip._internal.utils.misc import ensure_dir
 
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading  # type: ignore
-
-
-try:
-    from pip._vendor import colorama
-# Lots of different errors can come from this, including SystemError and
-# ImportError.
-except Exception:
-    colorama = None
-
-
 _log_state = threading.local()
-subprocess_logger = getLogger("pip.subprocessor")
+subprocess_logger = getLogger("pip.subprocess_logger")
 
 
 class BrokenStdoutLoggingError(Exception):
@@ -119,78 +112,38 @@ class IndentingFormatter(logging.Formatter):
         return formatted
 
 
-def _color_wrap(*colors: str) -> Callable[[str], str]:
-    def wrapped(inp: str) -> str:
-        return "".join(list(colors) + [inp, colorama.Style.RESET_ALL])
-
-    return wrapped
-
-
-class ColorizedStreamHandler(logging.StreamHandler):
-
-    # Don't build up a list of colors if we don't have colorama
-    if colorama:
-        COLORS = [
-            # This needs to be in order from highest logging level to lowest.
-            (logging.ERROR, _color_wrap(colorama.Fore.RED)),
-            (logging.WARNING, _color_wrap(colorama.Fore.YELLOW)),
-        ]
-    else:
-        COLORS = []
-
-    def __init__(self, stream: Optional[TextIO] = None, no_color: bool = None) -> None:
-        super().__init__(stream)
-        self._no_color = no_color
-
-        if WINDOWS and colorama:
-            self.stream = colorama.AnsiToWin32(self.stream)
-
-    def _using_stdout(self) -> bool:
-        """
-        Return whether the handler is using sys.stdout.
-        """
-        if WINDOWS and colorama:
-            # Then self.stream is an AnsiToWin32 object.
-            stream = cast(colorama.AnsiToWin32, self.stream)
-            return stream.wrapped is sys.stdout
-
-        return self.stream is sys.stdout
-
-    def should_color(self) -> bool:
-        # Don't colorize things if we do not have colorama or if told not to
-        if not colorama or self._no_color:
-            return False
-
-        real_stream = (
-            self.stream
-            if not isinstance(self.stream, colorama.AnsiToWin32)
-            else self.stream.wrapped
+class PipStreamHandler(RichHandler):
+    def __init__(self, stream: Optional[TextIO], no_color: bool) -> None:
+        super().__init__(
+            console=Console(file=stream, no_color=no_color),
+            show_time=False,
+            show_level=False,
+            show_path=False,
+            highlighter=NullHighlighter(),
         )
 
-        # If the stream is a tty we should color it
-        if hasattr(real_stream, "isatty") and real_stream.isatty():
-            return True
+    def emit(self, record: logging.LogRecord) -> None:
+        if record.msg != "[present-diagnostic]":
+            super().emit(record)
+            return
 
-        # If we have an ANSI term we should color it
-        if os.environ.get("TERM") == "ANSI":
-            return True
+        assert record.args
+        assert len(record.args) == 1
+        assert isinstance(record.args[0], DiagnosticPipError)
+        try:
+            self.console.print(
+                Padding(
+                    record.args[0],
+                    pad=(0, 0, 0, get_indentation()),
+                    expand=False,
+                )
+            )
+        except Exception:
+            self.handleError(record)
 
-        # If anything else we should not color it
-        return False
-
-    def format(self, record: logging.LogRecord) -> str:
-        msg = super().format(record)
-
-        if self.should_color():
-            for level, color in self.COLORS:
-                if record.levelno >= level:
-                    msg = color(msg)
-                    break
-
-        return msg
-
-    # The logging module says handleError() can be customized.
     def handleError(self, record: logging.LogRecord) -> None:
+        """Called when logging is unable to log some output."""
+
         exc_class, exc = sys.exc_info()[:2]
         # If a broken pipe occurred while calling write() or flush() on the
         # stdout stream in logging's Handler.emit(), then raise our special
@@ -199,12 +152,12 @@ class ColorizedStreamHandler(logging.StreamHandler):
         if (
             exc_class
             and exc
-            and self._using_stdout()
+            and self.console.file is sys.stdout
             and _is_broken_pipe_error(exc_class, exc)
         ):
             raise BrokenStdoutLoggingError()
 
-        return super().handleError(record)
+        self.console.print_exception(width=self.console.width)
 
 
 class BetterRotatingFileHandler(logging.handlers.RotatingFileHandler):
@@ -275,7 +228,7 @@ def setup_logging(verbosity: int, no_color: bool, user_log_file: Optional[str]) 
         "stderr": "ext://sys.stderr",
     }
     handler_classes = {
-        "stream": "pip._internal.utils.logging.ColorizedStreamHandler",
+        "stream": "pip._internal.utils.logging.PipStreamHandler",
         "file": "pip._internal.utils.logging.BetterRotatingFileHandler",
     }
     handlers = ["console", "console_errors", "console_subprocess"] + (
