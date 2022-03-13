@@ -724,6 +724,18 @@ def install_wheel(
     direct_url: Optional[DirectUrl] = None,
     requested: bool = False,
 ) -> None:
+    if "_PIP_USE_INSTALLER" in os.environ:
+        _install_wheel_using_installer(
+            name=name,
+            wheel_path=wheel_path,
+            scheme=scheme,
+            pycompile=pycompile,
+            warn_script_location=warn_script_location,
+            direct_url=direct_url,
+            requested=requested,
+        )
+        return
+
     with ZipFile(wheel_path, allowZip64=True) as z:
         with req_error_context(req_description):
             _install_wheel(
@@ -736,3 +748,16 @@ def install_wheel(
                 direct_url=direct_url,
                 requested=requested,
             )
+
+
+def _install_wheel_using_installer(
+    name: str,
+    wheel_path: str,
+    scheme: Scheme,
+    req_description: str,
+    pycompile: bool = True,
+    warn_script_location: bool = True,
+    direct_url: Optional[DirectUrl] = None,
+    requested: bool = False,
+):
+    pass
