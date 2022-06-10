@@ -30,28 +30,27 @@ Issue labels are used to:
 2. Provide status information for contributors and reporters
 3. Help contributors find tasks to work on
 
-The current set of labels are divided into several categories identified by
+The current set of labels are divided into several groups, identified by
 prefix:
 
-**C - Category**
+**C**
 : which area of `pip` functionality a feature request or issue is related to
 
-**K - Kind**
-**O - Operating System**
+**OS**
 : for issues that are OS-specific
 
-**P - Project/Platform**
-: related to something external to `pip`
+**project**
+: when the underlying cause is related to something external to `pip`
 
-**R - Resolution**
-: no more discussion is really needed, an action has been identified and the
-issue is waiting or closed
+**resolution**
+: no more discussion is needed now, an action has been identified and the
+issue is waiting on that (or closed)
 
-**S - State**
+**state**
 : for some automatic labels and other indicators that work is needed
 
 **type**
-: the role or flavor of an issue
+: the role or flavor of an issue (every issue should have one)
 
 The specific labels falling into each category have a description that can be
 seen on the [Labels](https://github.com/pypa/pip/labels) page.
@@ -62,34 +61,29 @@ In addition, there are several standalone labels:
 : this label marks an issue as beginner-friendly and shows up in banners that
 GitHub displays for first-time visitors to the repository
 
-**triage**
-: default label given to issues when they are created
-
-**trivial**
+**skip news**
 : special label for pull requests that removes the
 {ref}`news file requirement <choosing-news-entry-type>`
 
 **needs rebase or merge**
-
-: this is a special label used by BrownTruck to mark PRs that have merge
-conflicts
+: this is a special label used to mark PRs that have merge conflicts
 
 ### Automation
 
 There are several helpers to manage issues and pull requests.
 
 Issues created on the issue tracker are automatically given the
-`triage` label by the
+`state: needs triage` label by the
 [triage-new-issues](https://github.com/apps/triage-new-issues)
 bot. The label is automatically removed when another label is added.
 
 When an issue needs feedback from the author we can label it with
-`S: awaiting response`. When the author responds, the
+`state: awaiting response`. When the author responds, the
 [no-response](https://github.com/apps/no-response) bot removes the label.
 
 After an issue has been closed for 30 days, the
 [lock](https://github.com/apps/lock) bot locks the issue and adds the
-`S: auto-locked` label. This allows us to avoid monitoring existing closed
+`auto-locked` label. This allows us to avoid monitoring existing closed
 issues, but unfortunately prevents and references to issues from showing up as
 links on the closed issue.
 
@@ -126,12 +120,12 @@ should be done with respect per the
 
 The lifecycle of an issue (bug or support) generally looks like:
 
-1. waiting for triage (marked with label `triage`)
+1. waiting for triage (marked with label `state: needs triage`)
 
 2. confirming issue - some discussion with the user, gathering
    details, trying to reproduce the issue (may be marked with a specific
-   category, `S: awaiting-response`, `S: discussion-needed`, or
-   `S: need-repro`)
+   category, `state: awaiting response`, `state: needs discussion`, or
+   `state: needs reproducer`)
 
 3. confirmed - the issue is pretty consistently reproducible in a
    straightforward way, or a mechanism that could be causing the issue has been
@@ -158,7 +152,7 @@ depending on the situation:
 - pip version: `pip -V`
 - Python version: `python -VV`
 - Python path: `python -c 'import sys; print(sys.executable)'`
-- `python` on `PATH`: Unix: `which python`; Windows: `where python`
+- `python` on `PATH`: Unix: `which python`; Windowstate: `where python`
 - Python as resolved by the shell: `type python`
 - Origin of pip (get-pip.py, OS-level package manager, ensurepip, manual
   installation)
