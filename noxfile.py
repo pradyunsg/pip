@@ -99,7 +99,7 @@ def test(session: nox.Session) -> None:
     generated_sdist = os.path.join(sdist_dir, generated_files[0])
 
     # Install source distribution
-    run_with_protected_pip(session, "install", generated_sdist)
+    run_with_protected_pip(session, "install", generated_sdist, "--no-build-isolation")
 
     # Install test dependencies
     run_with_protected_pip(session, "install", "-r", REQUIREMENTS["tests"])
