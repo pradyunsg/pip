@@ -1,3 +1,5 @@
+# Issue Triage
+
 ```{note}
 This section of the documentation is currently being written. pip
 developers welcome your help to complete this documentation. If
@@ -5,8 +7,6 @@ you're interested in helping out, please let us know in the
 [tracking issue](https://github.com/pypa/pip/issues/6583), or
 just submit a pull request and mention it in that tracking issue.
 ```
-
-# Issue Triage
 
 This serves as an introduction to issue tracking in pip as well as
 how to help triage reported issues.

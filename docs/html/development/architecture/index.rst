@@ -1,16 +1,15 @@
 .. _architecture-pip-internals:
 
-===============================
-Architecture of pip's internals
-===============================
+=====================
+Internal Architecture
+=====================
 
 .. note::
 
-    This section of the documentation is currently being written. pip
-    developers welcome your help to complete this documentation. If
-    you're interested in helping out, please let us know in the
-    `tracking issue`_, or just go ahead and submit a pull request and
-    mention it in that tracking issue.
+    This section of the documentation is not actively maintained. pip
+    developers welcome your help to update and complete this
+    documentation. If you're interested in helping out, please go ahead
+    and submit a pull request.
 
 .. note::
 

@@ -18,8 +18,7 @@ or the `distutils-sig mailing list`_, to ask questions or get involved.
     ci
     issue-triage
     architecture/index
-    release-process
-    vendoring-policy
+    processes/index
 
 .. note::
 

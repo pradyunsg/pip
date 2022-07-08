@@ -23,6 +23,7 @@ cli/index
 :hidden:
 
 development/index
+policies/index
 ux_research_design
 news
 Code of Conduct <https://github.com/pypa/.github/blob/main/CODE_OF_CONDUCT.md>

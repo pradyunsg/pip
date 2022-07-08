@@ -1,11 +1,3 @@
-.. note::
-
-    This section of the documentation is currently out of date.
-
-    pip developers welcome your help to update this documentation. If
-    you're interested in helping out, please let us know in the
-    `tracking issue`_, or just submit a pull request and mention it in
-    that tracking issue.
 
 .. _`tracking issue`: https://github.com/pypa/pip/issues/7279
 
