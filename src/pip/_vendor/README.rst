@@ -120,7 +120,8 @@ Automatic Vendoring
 Vendoring is automated via the `vendoring <https://pypi.org/project/vendoring/>`_ tool from the content of
 ``pip/_vendor/vendor.txt`` and the different patches in
 ``tools/vendoring/patches``.
-Launch it via ``vendoring sync . -v`` (requires ``vendoring>=0.2.2``).
+
+See https://pip.pypa.io/en/latest/processes/vendoring/ for more details.
 
 
 Debundling
