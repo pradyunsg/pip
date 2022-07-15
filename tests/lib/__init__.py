@@ -511,9 +511,8 @@ class PipTestEnvironment(TestFileEnvironment):
     ) -> None:
         # Store paths related to the virtual environment
         self.venv_path = virtualenv.location
-        self.lib_path = virtualenv.lib
-        self.site_packages_path = virtualenv.site
-        self.bin_path = virtualenv.bin
+        self.site_packages_path = virtualenv.site_packages_path
+        self.bin_path = virtualenv.bin_path
 
         assert site.USER_BASE is not None
         assert site.USER_SITE is not None
@@ -561,7 +560,6 @@ class PipTestEnvironment(TestFileEnvironment):
             "base",
             "venv",
             "bin",
-            "lib",
             "site_packages",
             "user_base",
             "user_site",

@@ -22,14 +22,6 @@ from typing import (
 from unittest.mock import patch
 
 import pytest
-
-# Config will be available from the public API in pytest >= 7.0.0:
-# https://github.com/pytest-dev/pytest/commit/88d84a57916b592b070f4201dc84f0286d1f9fef
-from _pytest.config import Config
-
-# Parser will be available from the public API in pytest >= 7.0.0:
-# https://github.com/pytest-dev/pytest/commit/538b5c24999e9ebb4fab43faabc8bcc28737bcdf
-from _pytest.config.argparsing import Parser
 from setuptools.wheel import Wheel
 
 from pip._internal.cli.main import main as pip_entry_point
@@ -38,7 +30,7 @@ from pip._internal.utils.temp_dir import global_tempdir_manager
 from tests.lib import DATA_DIR, SRC_DIR, PipTestEnvironment, TestData
 from tests.lib.server import MockServer as _MockServer
 from tests.lib.server import make_mock_server, server_running
-from tests.lib.venv import VirtualEnvironment, VirtualEnvironmentType
+from tests.lib.venv import VirtualEnvironment
 
 from .lib.compat import nullcontext
 
@@ -52,7 +44,7 @@ else:
     Protocol = object
 
 
-def pytest_addoption(parser: Parser) -> None:
+def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addoption(
         "--keep-tmpdir",
         action="store_true",
@@ -65,12 +57,6 @@ def pytest_addoption(parser: Parser) -> None:
         default="2020-resolver",
         choices=["2020-resolver", "legacy"],
         help="use given resolver in tests",
-    )
-    parser.addoption(
-        "--use-venv",
-        action="store_true",
-        default=False,
-        help="use venv for virtual environment creation",
     )
     parser.addoption(
         "--run-search",
@@ -86,7 +72,9 @@ def pytest_addoption(parser: Parser) -> None:
     )
 
 
-def pytest_collection_modifyitems(config: Config, items: List[pytest.Item]) -> None:
+def pytest_collection_modifyitems(
+    config: pytest.Config, items: List[pytest.Item]
+) -> None:
     for item in items:
         if not hasattr(item, "module"):  # e.g.: DoctestTextfile
             continue
@@ -99,9 +87,7 @@ def pytest_collection_modifyitems(config: Config, items: List[pytest.Item]) -> N
             if item.get_closest_marker("network") is not None:
                 item.add_marker(pytest.mark.flaky(reruns=3, reruns_delay=2))
 
-        if item.get_closest_marker("incompatible_with_test_venv") and config.getoption(
-            "--use-venv"
-        ):
+        if item.get_closest_marker("incompatible_with_test_venv"):
             item.add_marker(pytest.mark.skip("Incompatible with test venv"))
         if (
             item.get_closest_marker("incompatible_with_venv")
@@ -292,7 +278,7 @@ def isolate(tmpdir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("GIT_AUTHOR_NAME", "pip")
     monkeypatch.setenv("GIT_AUTHOR_EMAIL", "distutils-sig@python.org")
 
-    # We want to disable the version check from running in the tests
+    # There's no point in trying to look this up in each environment.
     monkeypatch.setenv("PIP_DISABLE_PIP_VERSION_CHECK", "true")
 
     # Make sure tests don't share a requirements tracker.
@@ -342,14 +328,19 @@ def pip_src(tmpdir_factory: pytest.TempPathFactory) -> Path:
             ignored.update(fnmatch.filter(names, pattern))
         return ignored
 
-    pip_src = tmpdir_factory.mktemp("pip_src").joinpath("pip_src")
-    # Copy over our source tree so that each use is self contained
+    retval = tmpdir_factory.mktemp("pip_src").joinpath("pip_src")
+
+    # Copy over our source tree so that the test run doesn't touch these installs
     shutil.copytree(
         SRC_DIR,
-        pip_src.resolve(),
+        retval.resolve(),
         ignore=not_code_files_and_folders,
     )
-    return pip_src
+
+    # Byte-compile all the files eagerly.
+    compileall.compile_dir(os.fspath(retval), quiet=2)
+
+    return retval
 
 
 def _common_wheel_editable_install(
@@ -386,30 +377,23 @@ def coverage_install(
 def install_egg_link(
     venv: VirtualEnvironment, project_name: str, egg_info_dir: Path
 ) -> None:
-    with open(venv.site / "easy-install.pth", "a") as fp:
+    with open(venv.site_packages_path / "easy-install.pth", "a") as fp:
         fp.write(str(egg_info_dir.resolve()) + "\n")
-    with open(venv.site / (project_name + ".egg-link"), "w") as fp:
+    with open(venv.site_packages_path / (project_name + ".egg-link"), "w") as fp:
         fp.write(str(egg_info_dir) + "\n.")
 
 
 @pytest.fixture(scope="session")
 def virtualenv_template(
-    request: pytest.FixtureRequest,
     tmpdir_factory: pytest.TempPathFactory,
     pip_src: Path,
     setuptools_install: Path,
     coverage_install: Path,
 ) -> Iterator[VirtualEnvironment]:
-
-    venv_type: VirtualEnvironmentType
-    if request.config.getoption("--use-venv"):
-        venv_type = "venv"
-    else:
-        venv_type = "virtualenv"
-
     # Create the virtual environment
     tmpdir = tmpdir_factory.mktemp("virtualenv")
-    venv = VirtualEnvironment(tmpdir.joinpath("venv_orig"), venv_type=venv_type)
+    venv = VirtualEnvironment(location=tmpdir.joinpath("venv_orig"))
+    venv.create()
 
     # Install setuptools and pip.
     install_egg_link(venv, "setuptools", setuptools_install)
@@ -422,31 +406,29 @@ def virtualenv_template(
         rx=re.compile("noxfile.py$"),
     )
     subprocess.check_call(
-        [os.fspath(venv.bin / "python"), "setup.py", "-q", "develop"], cwd=pip_editable
+        [os.fspath(venv.bin_path / "python"), "setup.py", "-q", "develop"],
+        cwd=pip_editable,
     )
 
     # Install coverage and pth file for executing it in any spawned processes
     # in this virtual environment.
     install_egg_link(venv, "coverage", coverage_install)
-    # zz prefix ensures the file is after easy-install.pth.
-    with open(venv.site / "zz-coverage-helper.pth", "a") as f:
+    with open(venv.site_packages_path / "zz-coverage-helper.pth", "a") as f:
+        # zz prefix ensures the file is after easy-install.pth.
         f.write("import coverage; coverage.process_startup()")
 
     # Drop (non-relocatable) launchers.
-    for exe in os.listdir(venv.bin):
+    for exe in os.listdir(venv.bin_path):
         if not (
             exe.startswith("python")
             or exe.startswith("libpy")  # Don't remove libpypy-c.so...
         ):
-            (venv.bin / exe).unlink()
-
-    # Enable user site packages.
-    venv.user_site_packages = True
+            (venv.bin_path / exe).unlink()
 
     # Rename original virtualenv directory to make sure
     # it's not reused by mistake from one of the copies.
     venv_template = tmpdir / "venv_template"
-    venv.move(venv_template)
+    venv.move(to=venv_template)
     yield venv
 
 
@@ -455,7 +437,9 @@ def virtualenv_factory(
     virtualenv_template: VirtualEnvironment,
 ) -> Callable[[Path], VirtualEnvironment]:
     def factory(tmpdir: Path) -> VirtualEnvironment:
-        return VirtualEnvironment(tmpdir, virtualenv_template)
+        return VirtualEnvironment.from_template(
+            location=tmpdir, template=virtualenv_template
+        )
 
     return factory
 

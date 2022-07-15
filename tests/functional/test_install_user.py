@@ -100,9 +100,8 @@ class Tests_UserSite:
         """
         user install in virtualenv (with no system packages) fails with message
         """
-        # We can't use PYTHONNOUSERSITE, as it's not
-        # honoured by virtualenv's custom site.py.
-        virtualenv.user_site_packages = False
+        virtualenv.disable_global_and_user_site_packages()
+
         run_from = data.packages.joinpath("FSPkg")
         result = script.pip(
             "install",
