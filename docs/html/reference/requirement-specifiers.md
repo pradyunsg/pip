@@ -2,7 +2,10 @@
 
 # Requirement Specifiers
 
-pip supports installing from a package index using a {term}`requirement specifier <pypug:Requirement Specifier>`. Generally speaking, a requirement specifier is composed of a project name followed by optional {term}`version specifiers <pypug:Version Specifier>`.
+pip supports installing from a package index using a
+{term}`requirement specifier <pypug:Requirement Specifier>`. Generally speaking,
+a requirement specifier is composed of a project name followed by optional
+{term}`version specifiers <pypug:Version Specifier>`.
 
 {pep}`508` contains a full specification of the format of a requirement.
 
@@ -21,14 +24,16 @@ A requirement specifier comes in two forms:
 - name-based, which is composed of:
 
   - a package name (eg: `requests`)
-  - optionally, a set of "extras" that serve to install optional dependencies (eg: `security`)
+  - optionally, a set of "extras" that serve to install optional dependencies
+    (eg: `security`)
   - optionally, constraints to apply on the version of the package
   - optionally, environment markers
 
 - URL-based, which is composed of:
 
   - a package name (eg: `requests`)
-  - optionally, a set of "extras" that serve to install optional dependencies (eg: `security`)
+  - optionally, a set of "extras" that serve to install optional dependencies
+    (eg: `security`)
   - a URL for the package
   - optionally, environment markers
 

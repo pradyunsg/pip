@@ -2,10 +2,10 @@
 
 # Requirements File Format
 
-Requirements files serve as a list of items to be installed by pip, when
-using {ref}`pip install`. Files that use this format are often called
-"pip requirements.txt files", since `requirements.txt` is usually what
-these files are named (although, that is not a requirement).
+Requirements files serve as a list of items to be installed by pip, when using
+{ref}`pip install`. Files that use this format are often called "pip
+requirements.txt files", since `requirements.txt` is usually what these files
+are named (although, that is not a requirement).
 
 ```{note}
 The requirements file format is closely tied to a number of internal details of
@@ -42,8 +42,8 @@ http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a88
 
 ## Structure
 
-Each line of the requirements file indicates something to be installed,
-or arguments to {ref}`pip install`. The following forms are supported:
+Each line of the requirements file indicates something to be installed, or
+arguments to {ref}`pip install`. The following forms are supported:
 
 - `[[--option]...]`
 - `<requirement specifier>`
@@ -56,20 +56,20 @@ examples of all these forms, see {ref}`pip install Examples`.
 
 ### Encoding
 
-Requirements files are `utf-8` encoding by default and also support
-{pep}`263` style comments to change the encoding (i.e.
+Requirements files are `utf-8` encoding by default and also support {pep}`263`
+style comments to change the encoding (i.e.
 `# -*- coding: <encoding name> -*-`).
 
 ### Line continuations
 
-A line ending in an unescaped `\` is treated as a line continuation
-and the newline following it is effectively ignored.
+A line ending in an unescaped `\` is treated as a line continuation and the
+newline following it is effectively ignored.
 
 ### Comments
 
 A line that begins with `#` is treated as a comment and ignored. Whitespace
-followed by a `#` causes the `#` and the remainder of the line to be
-treated as a comment.
+followed by a `#` causes the `#` and the remainder of the line to be treated as
+a comment.
 
 Comments are stripped _after_ line continuations are processed.
 
@@ -80,8 +80,8 @@ below.
 
 ### Global options
 
-The following options have an effect on the _entire_ `pip install` run, and
-must be specified on their individual lines.
+The following options have an effect on the _entire_ `pip install` run, and must
+be specified on their individual lines.
 
 ```{eval-rst}
 .. pip-requirements-file-options-ref-list::
@@ -134,12 +134,11 @@ You can also refer to {ref}`constraints files <Constraints Files>`, like this:
 
 ```
 
-pip supports the use of environment variables inside the
-requirements file.
+pip supports the use of environment variables inside the requirements file.
 
 You have to use the POSIX format for variable names including brackets around
-the uppercase name as shown in this example: `${API_TOKEN}`. pip will attempt
-to find the corresponding environment variable defined on the host system at
+the uppercase name as shown in this example: `${API_TOKEN}`. pip will attempt to
+find the corresponding environment variable defined on the host system at
 runtime.
 
 ```{note}
@@ -148,10 +147,9 @@ and `%VARIABLE%`.
 ```
 
 You can now store sensitive data (tokens, keys, etc.) in environment variables
-and only specify the variable name for your requirements, letting pip lookup
-the value at runtime. This approach aligns with the commonly used
+and only specify the variable name for your requirements, letting pip lookup the
+value at runtime. This approach aligns with the commonly used
 [12-factor configuration pattern](https://12factor.net/config).
-
 
 ## Influencing the build system
 
@@ -161,7 +159,8 @@ This disables the use of wheels (cached or otherwise). This could mean that buil
 This mechanism is only preserved for backwards compatibility and should be considered deprecated. A future release of pip may drop these options.
 ```
 
-The `--global-option` and `--install-option` options are used to pass options to `setup.py`.
+The `--global-option` and `--install-option` options are used to pass options to
+`setup.py`.
 
 ```{attention}
 These options are highly coupled with how pip invokes setuptools using the {doc}`../reference/build-system/setup-py` build system interface. It is not compatible with newer {doc}`../reference/build-system/pyproject-toml` build system interface.
@@ -179,7 +178,11 @@ The above translates roughly into running FooProject's `setup.py` script as:
 
     python setup.py --no-user-cfg install --prefix='/usr/local' --no-compile
 
-Note that the only way of giving more than one option to `setup.py` is through multiple `--global-option` and `--install-option` options, as shown in the example above. The value of each option is passed as a single argument to the `setup.py` script. Therefore, a line such as the following is invalid and would result in an installation error.
+Note that the only way of giving more than one option to `setup.py` is through
+multiple `--global-option` and `--install-option` options, as shown in the
+example above. The value of each option is passed as a single argument to the
+`setup.py` script. Therefore, a line such as the following is invalid and would
+result in an installation error.
 
     # Invalid. Please use '--install-option' twice as shown above.
     FooProject >= 1.2 --install-option="--prefix=/usr/local --no-compile"

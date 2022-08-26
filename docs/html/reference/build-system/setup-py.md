@@ -35,9 +35,9 @@ As a first step, `pip` needs to get metadata about a package (name, version,
 dependencies, and more). It collects this by calling `setup.py egg_info`.
 
 The `egg_info` command generates the metadata for the package, which pip can
-then consume and proceed to gather all the dependencies of the package. Once
-the dependency resolution process is complete, pip will proceed to the next
-stage of the build process for these packages.
+then consume and proceed to gather all the dependencies of the package. Once the
+dependency resolution process is complete, pip will proceed to the next stage of
+the build process for these packages.
 
 ### Wheel Generation
 
@@ -50,9 +50,9 @@ This is done by calling `setup.py bdist_wheel` which requires the {pypi}`wheel`
 package to be installed.
 
 If this wheel generation is successful (this can include compiling C/C++ code,
-depending on the package), the generated wheel is added to pip's wheel cache
-and will be used for this installation. The built wheel is cached locally
-by pip to avoid repeated identical builds.
+depending on the package), the generated wheel is added to pip's wheel cache and
+will be used for this installation. The built wheel is cached locally by pip to
+avoid repeated identical builds.
 
 If this wheel generation fails, pip runs `setup.py clean` to clean up any build
 artifacts that may have been generated. After that, pip will attempt a direct
@@ -80,8 +80,8 @@ to `distutils`-based projects.
 
 ## Customising the build
 
-The `--global-option` and `--build-option` arguments to the `pip install`
-and `pip wheel` inject additional arguments into the `setup.py` command
+The `--global-option` and `--build-option` arguments to the `pip install` and
+`pip wheel` inject additional arguments into the `setup.py` command
 (`--build-option` is only available in `pip wheel`).
 
 ```{attention}
@@ -118,8 +118,8 @@ This passes a preprocessor symbol to the extension build.
 
 Any output produced by the build system will be read by pip (for display to the
 user if requested). In order to correctly read the build system output, pip
-requires that the output is written in a well-defined encoding, specifically
-the encoding the user has configured for text output (which can be obtained in
+requires that the output is written in a well-defined encoding, specifically the
+encoding the user has configured for text output (which can be obtained in
 Python using `locale.getpreferredencoding`). If the configured encoding is
 ASCII, pip assumes UTF-8 (to account for the behaviour of some Unix systems).
 

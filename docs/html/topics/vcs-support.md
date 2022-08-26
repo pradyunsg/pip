@@ -1,9 +1,10 @@
 (vcs support)=
+
 # VCS Support
 
-pip supports installing from various version control systems (VCS).
-This support requires a working executable to be available (for the version
-control system being used). It is used through URL prefixes:
+pip supports installing from various version control systems (VCS). This support
+requires a working executable to be available (for the version control system
+being used). It is used through URL prefixes:
 
 - Git -- `git+`
 - Mercurial -- `hg+`
@@ -29,7 +30,8 @@ The former two use [the Git Protocol], which lacks authentication, and HTTP is
 insecure due to lack of TLS based encryption.
 ```
 
-[the Git Protocol]: https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols
+[the git protocol]:
+  https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols
 
 It is also possible to specify a "git ref" such as branch name, a commit hash or
 a tag name:
@@ -42,13 +44,13 @@ MyProject @ git+https://git.example.com/MyProject.git@refs/pull/123/head
 ```
 
 When passing a commit hash, specifying a full hash is preferable to a partial
-hash because a full hash allows pip to operate more efficiently (e.g. by
-making fewer network calls).
+hash because a full hash allows pip to operate more efficiently (e.g. by making
+fewer network calls).
 
 ### Mercurial
 
-The supported schemes are `hg+file`, `hg+http`, `hg+https`, `hg+ssh`
-and `hg+static-http`. Here are some of the supported forms:
+The supported schemes are `hg+file`, `hg+http`, `hg+https`, `hg+ssh` and
+`hg+static-http`. Here are some of the supported forms:
 
 ```
 MyProject @ hg+http://hg.myproject.org/MyProject
@@ -57,8 +59,8 @@ MyProject @ hg+ssh://hg.myproject.org/MyProject
 MyProject @ hg+file:///home/user/projects/MyProject
 ```
 
-It is also possible to specify a revision number, a revision hash, a tag name
-or a local branch name:
+It is also possible to specify a revision number, a revision hash, a tag name or
+a local branch name:
 
 ```none
 MyProject @ hg+http://hg.example.com/MyProject@da39a3ee5e6b
@@ -125,10 +127,10 @@ the {ref}`--editable <install_--editable>` option) or not.
 - For non-editable installs, the project is built locally in a temp dir and then
   installed normally.
 
-Note that if a satisfactory version of the package is already installed, the
-VCS source will not overwrite it without an `--upgrade` flag. Further, pip
-looks at the package version, at the target revision to determine what action to
-take on the VCS requirement (not the commit itself).
+Note that if a satisfactory version of the package is already installed, the VCS
+source will not overwrite it without an `--upgrade` flag. Further, pip looks at
+the package version, at the target revision to determine what action to take on
+the VCS requirement (not the commit itself).
 
 The {ref}`pip freeze` subcommand will record the VCS requirement specifier
 (referencing a specific commit) only if the install is done with the editable

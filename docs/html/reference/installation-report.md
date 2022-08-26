@@ -1,10 +1,12 @@
 # Installation Report
 
 ```{versionadded} 22.2
+
 ```
 
-The `--report` option of the pip install command produces a detailed JSON report of what
-it did install (or what it would have installed, if used with the `--dry-run` option).
+The `--report` option of the pip install command produces a detailed JSON report
+of what it did install (or what it would have installed, if used with the
+`--dry-run` option).
 
 ```{note}
 When considering use cases, please bear in mind that
@@ -23,45 +25,46 @@ When considering use cases, please bear in mind that
 
 The report is a JSON object with the following properties:
 
-- `version`: the string `0`, denoting that the installation report is an experimental
-  feature. This value will change to `1`, when the feature is deemed stable after
-  gathering user feedback (likely in pip 22.3 or 23.0). Backward incompatible changes
-  may be introduced in version `1` without notice. After that, it will change only if
-  and when backward incompatible changes are introduced, such as removing mandatory
-  fields or changing the semantics or data type of existing fields. The introduction of
-  backward incompatible changes will follow the usual pip processes such as the
-  deprecation cycle or feature flags. Tools must check this field to ensure they support
-  the corresponding version.
+- `version`: the string `0`, denoting that the installation report is an
+  experimental feature. This value will change to `1`, when the feature is
+  deemed stable after gathering user feedback (likely in pip 22.3 or 23.0).
+  Backward incompatible changes may be introduced in version `1` without notice.
+  After that, it will change only if and when backward incompatible changes are
+  introduced, such as removing mandatory fields or changing the semantics or
+  data type of existing fields. The introduction of backward incompatible
+  changes will follow the usual pip processes such as the deprecation cycle or
+  feature flags. Tools must check this field to ensure they support the
+  corresponding version.
 
 - `pip_version`: a string with the version of pip used to produce the report.
 
-- `install`: an array of [InstallationReportItem](InstallationReportItem) representing
-  the distribution packages (to be) installed.
+- `install`: an array of [InstallationReportItem](InstallationReportItem)
+  representing the distribution packages (to be) installed.
 
-- `environment`: an object describing the environment where the installation report was
-  generated. See [PEP 508 environment
-  markers](https://peps.python.org/pep-0508/#environment-markers) for more information.
-  Values have a string type.
+- `environment`: an object describing the environment where the installation
+  report was generated. See
+  [PEP 508 environment markers](https://peps.python.org/pep-0508/#environment-markers)
+  for more information. Values have a string type.
 
 (InstallationReportItem)=
 
-An `InstallationReportItem` is an object describing a (to be) installed distribution
-package with the following properties:
+An `InstallationReportItem` is an object describing a (to be) installed
+distribution package with the following properties:
 
-- `metadata`: the metadata of the distribution, converted to a JSON object according to
-  the [PEP 566
-  transformation](https://www.python.org/dev/peps/pep-0566/#json-compatible-metadata).
+- `metadata`: the metadata of the distribution, converted to a JSON object
+  according to the
+  [PEP 566 transformation](https://www.python.org/dev/peps/pep-0566/#json-compatible-metadata).
 
-- `is_direct`: `true` if the requirement was provided as, or constrained to, a direct
-  URL reference. `false` if the requirements was provided as a name and version
-  specifier.
+- `is_direct`: `true` if the requirement was provided as, or constrained to, a
+  direct URL reference. `false` if the requirements was provided as a name and
+  version specifier.
 
-- `download_info`: Information about the artifact (to be) downloaded for installation,
-  using the [direct
-  URL](https://packaging.python.org/en/latest/specifications/direct-url/) data
-  structure. When `is_direct` is `true`, this field is the same as the `direct_url.json`
-  metadata, otherwise it represents the URL of the artifact obtained from the index or
-  `--find-links`.
+- `download_info`: Information about the artifact (to be) downloaded for
+  installation, using the
+  [direct URL](https://packaging.python.org/en/latest/specifications/direct-url/)
+  data structure. When `is_direct` is `true`, this field is the same as the
+  `direct_url.json` metadata, otherwise it represents the URL of the artifact
+  obtained from the index or `--find-links`.
 
   ```{note}
   For source archives, `download_info.archive_info.hash` may
@@ -70,12 +73,13 @@ package with the following properties:
   record the origin URL of the downloaded artifact.
   ```
 
-- `requested`: `true` if the requirement was explicitly provided by the user, either
-  directely via a command line argument or indirectly via a requirements file. `false`
-  if the requirement was installed as a dependency of another requirement.
+- `requested`: `true` if the requirement was explicitly provided by the user,
+  either directely via a command line argument or indirectly via a requirements
+  file. `false` if the requirement was installed as a dependency of another
+  requirement.
 
-- `requested_extras`: extras requested by the user. This field is only present when the
-  `requested` field is true.
+- `requested_extras`: extras requested by the user. This field is only present
+  when the `requested` field is true.
 
 ## Example
 
@@ -114,10 +118,7 @@ will produce an output similar to this (metadata abriged for brevity):
           "email-validator (>=1.0.3) ; extra == 'email'"
         ],
         "requires_python": ">=3.6.1",
-        "provides_extra": [
-          "dotenv",
-          "email"
-        ]
+        "provides_extra": ["dotenv", "email"]
       }
     },
     {
@@ -134,9 +135,7 @@ will produce an output similar to this (metadata abriged for brevity):
       "metadata": {
         "name": "packaging",
         "version": "21.4.dev0",
-        "requires_dist": [
-          "pyparsing (!=3.0.5,>=2.0.2)"
-        ],
+        "requires_dist": ["pyparsing (!=3.0.5,>=2.0.2)"],
         "requires_python": ">=3.7"
       }
     },

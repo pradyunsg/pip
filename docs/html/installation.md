@@ -30,12 +30,11 @@ available in the standard library documentation.
 
 ### `get-pip.py`
 
-This is a Python script that uses some bootstrapping logic to install
-pip.
+This is a Python script that uses some bootstrapping logic to install pip.
 
 - Download the script, from <https://bootstrap.pypa.io/get-pip.py>.
-- Open a terminal/command prompt, `cd` to the folder containing the
-  `get-pip.py` file and run:
+- Open a terminal/command prompt, `cd` to the folder containing the `get-pip.py`
+  file and run:
 
   ```{pip-cli}
   $ python get-pip.py
@@ -47,8 +46,8 @@ More details about this script can be found in [pypa/get-pip]'s README.
 
 ## Alternative Methods
 
-Depending on how you installed Python, there might be other mechanisms
-available to you for installing pip such as
+Depending on how you installed Python, there might be other mechanisms available
+to you for installing pip such as
 {ref}`using Linux package managers <pypug:installing pip/setuptools/wheel with linux package managers>`.
 
 These mechanisms are provided by redistributors of pip, who may have modified
@@ -77,13 +76,18 @@ The current version of pip works on:
 - Windows, Linux and MacOS.
 - CPython 3.7, 3.8, 3.9, 3.10 and latest PyPy3.
 
-pip is tested to work on the latest patch version of the Python interpreter,
-for each of the minor versions listed above. Previous patch versions are
-supported on a best effort approach.
+pip is tested to work on the latest patch version of the Python interpreter, for
+each of the minor versions listed above. Previous patch versions are supported
+on a best effort approach.
 
 Other operating systems and Python versions are not supported by pip's
 maintainers.
 
-Users who are on unsupported platforms should be aware that if they hit issues, they may have to resolve them for themselves. If they received pip from a source which provides support for their platform, they should request pip support from that source.
+Users who are on unsupported platforms should be aware that if they hit issues,
+they may have to resolve them for themselves. If they received pip from a source
+which provides support for their platform, they should request pip support from
+that source.
 
-[^python]: The `ensurepip` module was added to the Python standard library in Python 3.4.
+[^python]:
+    The `ensurepip` module was added to the Python standard library in Python
+    3.4.

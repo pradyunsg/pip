@@ -24,8 +24,8 @@ timer) or it will return a whole new response which pip can then store in the
 cache.
 
 While this cache attempts to minimize network activity, it does not prevent
-network access altogether. If you want a local install solution that
-circumvents accessing PyPI, see {ref}`Installing from local packages`.
+network access altogether. If you want a local install solution that circumvents
+accessing PyPI, see {ref}`Installing from local packages`.
 
 (wheel-caching)=
 
@@ -41,8 +41,8 @@ wheel using the package's build system. If the build is successful, this wheel
 is added to the cache and used in subsequent installs for the same package
 version.
 
-Wheels built from source distributions provided to pip as a direct path (such
-as `pip install .`) are not cached across runs, though they may be reused within
+Wheels built from source distributions provided to pip as a direct path (such as
+`pip install .`) are not cached across runs, though they may be reused within
 the same `pip` execution.
 
 ```{versionchanged} 20.0
@@ -63,7 +63,8 @@ an implementation detail and may change between any two versions of pip.
 
 ```
 
-You can use `pip cache dir` to get the cache directory that pip is currently configured to use.
+You can use `pip cache dir` to get the cache directory that pip is currently
+configured to use.
 
 ### Default paths
 
@@ -93,9 +94,9 @@ pip tries to use its cache whenever possible, and it is designed do the right
 thing by default.
 
 In some cases, pip's caching behaviour can be undesirable. As an example, if you
-have package with optional C extensions, that generates a pure Python wheel
-when the C extension can’t be built, pip will use that cached wheel even when
-you later invoke it from an environment that could have built those optional C
+have package with optional C extensions, that generates a pure Python wheel when
+the C extension can’t be built, pip will use that cached wheel even when you
+later invoke it from an environment that could have built those optional C
 extensions. This is because pip is seeing a cached wheel for that matches the
 package being built, and pip assumes that the result of building a package from
 a package index is deterministic.
@@ -120,11 +121,13 @@ The {ref}`pip cache` command can be used to manage pip's cache.
 
 ### General overview
 
-`pip cache info` provides an overview of the contents of pip's cache, such as the total size and location of various parts of it.
+`pip cache info` provides an overview of the contents of pip's cache, such as
+the total size and location of various parts of it.
 
 ### Removing a single package
 
-`pip cache remove setuptools` removes all wheel files related to setuptools from pip's cache.
+`pip cache remove setuptools` removes all wheel files related to setuptools from
+pip's cache.
 
 ### Removing the cache
 
@@ -134,12 +137,13 @@ The {ref}`pip cache` command can be used to manage pip's cache.
 
 `pip cache list` will list all wheel files from pip's cache.
 
-`pip cache list setuptools` will list all setuptools-related wheel files from pip's cache.
+`pip cache list setuptools` will list all setuptools-related wheel files from
+pip's cache.
 
 ## Disabling caching
 
 pip's caching behaviour is disabled by passing the `--no-cache-dir` option.
 
 It is, however, recommended to **NOT** disable pip's caching. Doing so can
-significantly slow down pip (due to repeated operations and package builds)
-and result in significantly more network usage.
+significantly slow down pip (due to repeated operations and package builds) and
+result in significantly more network usage.

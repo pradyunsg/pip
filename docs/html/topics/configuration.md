@@ -15,8 +15,8 @@ and how they are related to pip's various command line options.
 
 ## Configuration Files
 
-Configuration files can change the default values for command line option.
-They are written using a standard INI style configuration files.
+Configuration files can change the default values for command line option. They
+are written using a standard INI style configuration files.
 
 pip has 3 "levels" of configuration files:
 
@@ -84,8 +84,8 @@ Site
 ### `PIP_CONFIG_FILE`
 
 Additionally, the environment variable `PIP_CONFIG_FILE` can be used to specify
-a configuration file that's loaded first, and whose values are overridden by
-the values set in the aforementioned files. Setting this to {any}`os.devnull`
+a configuration file that's loaded first, and whose values are overridden by the
+values set in the aforementioned files. Setting this to {any}`os.devnull`
 disables the loading of _all_ configuration files.
 
 (config-precedence)=
@@ -100,9 +100,9 @@ order:
 - User
 - Site
 
-Each file read overrides any values read from previous files, so if the
-global timeout is specified in both the global file and the per-user file
-then the latter value will be used.
+Each file read overrides any values read from previous files, so if the global
+timeout is specified in both the global file and the per-user file then the
+latter value will be used.
 
 ### Naming
 
@@ -136,8 +136,8 @@ timeout = 10
 
 ### Boolean options
 
-Boolean options like `--ignore-installed` or `--no-dependencies` can be set
-like this:
+Boolean options like `--ignore-installed` or `--no-dependencies` can be set like
+this:
 
 ```ini
 [install]
@@ -159,8 +159,8 @@ no-warn-script-location = false
 
 ### Repeatable options
 
-For options which can be repeated like `--verbose` and `--quiet`, a
-non-negative integer can be used to represent the level to be specified:
+For options which can be repeated like `--verbose` and `--quiet`, a non-negative
+integer can be used to represent the level to be specified:
 
 ```ini
 [global]
@@ -219,8 +219,8 @@ Use `no`, `false` or `0` instead.
 
 ## Precedence / Override order
 
-Command line options override environment variables, which override the
-values in a configuration file. Within the configuration file, values in
+Command line options override environment variables, which override the values
+in a configuration file. Within the configuration file, values in
 command-specific sections override values in the global section.
 
 Examples:

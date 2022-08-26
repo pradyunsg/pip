@@ -7,14 +7,14 @@ dependency resolution. This behaviour can be disabled by passing
 
 ## How it works
 
-When a user does a `pip install` (e.g. `pip install tea`), pip needs to work
-out the package's dependencies (e.g. `spoon`, `hot-water`, `tea-leaves` etc.)
-and what the versions of each of those dependencies it should install.
+When a user does a `pip install` (e.g. `pip install tea`), pip needs to work out
+the package's dependencies (e.g. `spoon`, `hot-water`, `tea-leaves` etc.) and
+what the versions of each of those dependencies it should install.
 
 At the start of a `pip install` run, pip does not have all the dependency
-information of the requested packages. It needs to work out the dependencies
-of the requested packages, the dependencies of those dependencies, and so on.
-Over the course of the dependency resolution process, pip will need to download
+information of the requested packages. It needs to work out the dependencies of
+the requested packages, the dependencies of those dependencies, and so on. Over
+the course of the dependency resolution process, pip will need to download
 distribution files of the packages which are used to get the dependencies of a
 package.
 
@@ -30,10 +30,10 @@ incorrect. When pip finds that an assumption it made earlier is incorrect, it
 has to backtrack, which means also discarding some of the work that has already
 been done, and going back to choose another path.
 
-This can look like pip downloading multiple versions of the same package,
-since pip explicitly presents each download to the user. The backtracking of
-choices made during is not unexpected behaviour or a bug. It is part of how
-dependency resolution for Python packages works.
+This can look like pip downloading multiple versions of the same package, since
+pip explicitly presents each download to the user. The backtracking of choices
+made during is not unexpected behaviour or a bug. It is part of how dependency
+resolution for Python packages works.
 
 ````{admonition} Example
 The user requests `pip install tea`. The package `tea` declares a dependency on
@@ -99,8 +99,8 @@ many choices it will reconsider, and how much computation would be needed.
 
 For the user, this means it can take a long time to complete when pip starts
 backtracking. In the case where a package has a lot of versions, arriving at a
-good candidate can take a lot of time. The amount of time depends on the
-package size, the number of versions pip must try, and various other factors.
+good candidate can take a lot of time. The amount of time depends on the package
+size, the number of versions pip must try, and various other factors.
 
 Backtracking reduces the risk that installing a new package will accidentally
 break an existing installed package, and so reduces the risk that your
@@ -110,26 +110,27 @@ which version of a package is a good candidate to install.
 ## Possible ways to reduce backtracking
 
 There is no one-size-fits-all answer to situations where pip is backtracking
-excessively during dependency resolution. There are ways to reduce the
-degree to which pip might backtrack though. Nearly all of these approaches
-require some amount of trial and error.
+excessively during dependency resolution. There are ways to reduce the degree to
+which pip might backtrack though. Nearly all of these approaches require some
+amount of trial and error.
 
 ### Allow pip to complete its backtracking
 
-In most cases, pip will complete the backtracking process successfully.
-This could take a very long time to complete, so this may not be your
-preferred option.
+In most cases, pip will complete the backtracking process successfully. This
+could take a very long time to complete, so this may not be your preferred
+option.
 
-However, it is a possible that pip will not be able to find a set of
-compatible versions. For this, pip will try every possible combination that
-it needs to and determine that there is no compatible set.
+However, it is a possible that pip will not be able to find a set of compatible
+versions. For this, pip will try every possible combination that it needs to and
+determine that there is no compatible set.
 
 If you'd prefer not to wait, you can interrupt pip (Ctrl+c) and try the
 strategies listed below.
 
 ### Reduce the number of versions pip is trying to use
 
-It is usually a good idea to add constraints the package(s) that pip is backtracking on (e.g. in the above example - `cup`).
+It is usually a good idea to add constraints the package(s) that pip is
+backtracking on (e.g. in the above example - `cup`).
 
 You could try something like:
 
@@ -137,8 +138,8 @@ You could try something like:
 $ pip install tea "cup >= 3.13"
 ```
 
-This will reduce the number of versions of `cup` it tries, and
-possibly reduce the time pip takes to install.
+This will reduce the number of versions of `cup` it tries, and possibly reduce
+the time pip takes to install.
 
 There is a possibility that the addition constraint is incorrect. When this
 happens, the reduced search space makes it easier for pip to more quickly
@@ -155,24 +156,23 @@ how to inspect:
 - their release notes and changelogs from past versions
 
 During deployment, you can create a lockfile stating the exact package and
-version number for for each dependency of that package. You can create this
-with [pip-tools](https://github.com/jazzband/pip-tools/).
+version number for for each dependency of that package. You can create this with
+[pip-tools](https://github.com/jazzband/pip-tools/).
 
-This means the "work" is done once during development process, and thus
-will avoid performing dependency resolution during deployment.
+This means the "work" is done once during development process, and thus will
+avoid performing dependency resolution during deployment.
 
 (Fixing conflicting dependencies)=
 
 ## Dealing with dependency conflicts
 
-This section provides practical suggestions to pip users who encounter
-a `ResolutionImpossible` error, where pip cannot install their specified
-packages due to conflicting dependencies.
+This section provides practical suggestions to pip users who encounter a
+`ResolutionImpossible` error, where pip cannot install their specified packages
+due to conflicting dependencies.
 
 ### Understanding your error message
 
-When you get a `ResolutionImpossible` error, you might see something
-like this:
+When you get a `ResolutionImpossible` error, you might see something like this:
 
 ```{pip-cli}
 $ pip install "pytest < 4.6" pytest-cov==2.12.1
@@ -189,15 +189,14 @@ asking for conflicting versions of pytest.
 
 - `pytest-cov` version `2.12.1`, requires `pytest` with a version or equal to
   `4.6`.
-- `package_tea` version `4.3.0` depends on version `2.3.1` of
-  `package_water`
+- `package_tea` version `4.3.0` depends on version `2.3.1` of `package_water`
 
-Sometimes these messages are straightforward to read, because they use
-commonly understood comparison operators to specify the required version
-(e.g. `<` or `>`).
+Sometimes these messages are straightforward to read, because they use commonly
+understood comparison operators to specify the required version (e.g. `<` or
+`>`).
 
-However, Python packaging also supports some more complex ways for
-specifying package versions (e.g. `~=` or `*`):
+However, Python packaging also supports some more complex ways for specifying
+package versions (e.g. `~=` or `*`):
 
 | Operator | Description                                                    | Example                                             |
 | -------- | -------------------------------------------------------------- | --------------------------------------------------- |
@@ -210,42 +209,40 @@ specifying package versions (e.g. `~=` or `*`):
 | `~=`     | Any compatible{sup}`1` version.                                | `~=3.1`: any version compatible{sup}`1` with `3.1`. |
 | `*`      | Can be used at the end of a version number to represent _all_. | `==3.1.*`: any version that starts with `3.1`.      |
 
-{sup}`1` Compatible versions are higher versions that only differ in the final segment.
-`~=3.1.2` is equivalent to `>=3.1.2, ==3.1.*`. `~=3.1` is equivalent to `>=3.1, ==3.*`.
+{sup}`1` Compatible versions are higher versions that only differ in the final
+segment. `~=3.1.2` is equivalent to `>=3.1.2, ==3.1.*`. `~=3.1` is equivalent to
+`>=3.1, ==3.*`.
 
-The detailed specification of supported comparison operators can be
-found in {pep}`440`.
+The detailed specification of supported comparison operators can be found in
+{pep}`440`.
 
 ### Possible solutions
 
-The solution to your error will depend on your individual use case. Here
-are some things to try:
+The solution to your error will depend on your individual use case. Here are
+some things to try:
 
 #### Audit your top level requirements
 
-As a first step, it is useful to audit your project and remove any
-unnecessary or out of date requirements (e.g. from your `setup.py` or
-`requirements.txt` files). Removing these can significantly reduce the
-complexity of your dependency tree, thereby reducing opportunities for
-conflicts to occur.
+As a first step, it is useful to audit your project and remove any unnecessary
+or out of date requirements (e.g. from your `setup.py` or `requirements.txt`
+files). Removing these can significantly reduce the complexity of your
+dependency tree, thereby reducing opportunities for conflicts to occur.
 
 #### Loosen your top level requirements
 
-Sometimes the packages that you have asked pip to install are
-incompatible because you have been too strict when you specified the
-package version.
+Sometimes the packages that you have asked pip to install are incompatible
+because you have been too strict when you specified the package version.
 
-In our first example both `package_coffee` and `package_tea` have been
-_pinned_ to use specific versions
-(`package_coffee==0.44.1b0 package_tea==4.3.0`).
+In our first example both `package_coffee` and `package_tea` have been _pinned_
+to use specific versions (`package_coffee==0.44.1b0 package_tea==4.3.0`).
 
-To find a version of both `package_coffee` and `package_tea` that depend on
-the same version of `package_water`, you might consider:
+To find a version of both `package_coffee` and `package_tea` that depend on the
+same version of `package_water`, you might consider:
 
-- Loosening the range of packages that you are prepared to install
-  (e.g. `pip install "package_coffee>0.44.*" "package_tea>4.0.0"`)
-- Asking pip to install _any_ version of `package_coffee` and `package_tea`
-  by removing the version specifiers altogether (e.g.
+- Loosening the range of packages that you are prepared to install (e.g.
+  `pip install "package_coffee>0.44.*" "package_tea>4.0.0"`)
+- Asking pip to install _any_ version of `package_coffee` and `package_tea` by
+  removing the version specifiers altogether (e.g.
   `pip install package_coffee package_tea`)
 
 In the second case, pip will automatically find a version of both
@@ -267,14 +264,14 @@ This will result in:
 - `package_coffee 0.44.1b0`, which depends on `package_water 2.6.1`
 - `package_tea 4.1.3` which also depends on `package_water 2.6.1`
 
-Now that you have resolved the issue, you can repin the compatible
-package versions as required.
+Now that you have resolved the issue, you can repin the compatible package
+versions as required.
 
 #### Loosen the requirements of your dependencies
 
-Assuming that you cannot resolve the conflict by loosening the version
-of the package you require (as above), you can try to fix the issue on
-your _dependency_ by:
+Assuming that you cannot resolve the conflict by loosening the version of the
+package you require (as above), you can try to fix the issue on your
+_dependency_ by:
 
 - Requesting that the package maintainers loosen _their_ dependencies
 - Forking the package and loosening the dependencies yourself
@@ -286,20 +283,20 @@ any support provided by the package maintainers. Proceed at your own risk!
 
 #### All requirements are appropriate, but a solution does not exist
 
-Sometimes it's simply impossible to find a combination of package
-versions that do not conflict. Welcome to [dependency hell].
+Sometimes it's simply impossible to find a combination of package versions that
+do not conflict. Welcome to [dependency hell].
 
 In this situation, you could consider:
 
-- Using an alternative package, if that is acceptable for your project.
-  See [Awesome Python] for similar packages.
-- Refactoring your project to reduce the number of dependencies (for
-  example, by breaking up a monolithic code base into smaller pieces).
+- Using an alternative package, if that is acceptable for your project. See
+  [Awesome Python] for similar packages.
+- Refactoring your project to reduce the number of dependencies (for example, by
+  breaking up a monolithic code base into smaller pieces).
 
 ### Getting help
 
-If none of the suggestions above work for you, we recommend that you ask
-for help on:
+If none of the suggestions above work for you, we recommend that you ask for
+help on:
 
 - [Python user Discourse](https://discuss.python.org/c/users/7)
 - [Python user forums](https://www.python.org/community/forums/)
@@ -309,10 +306,10 @@ for help on:
 
 See ["How do I ask a good question?"] for tips on asking for help.
 
-Unfortunately, **the pip team cannot provide support for individual
-dependency conflict errors**. Please _only_ open a ticket on
-[pip's issue tracker](https://github.com/pypa/pip/issues) if you believe
-that your problem has exposed a bug in pip.
+Unfortunately, **the pip team cannot provide support for individual dependency
+conflict errors**. Please _only_ open a ticket on
+[pip's issue tracker](https://github.com/pypa/pip/issues) if you believe that
+your problem has exposed a bug in pip.
 
 ["how do i ask a good question?"]: https://stackoverflow.com/help/how-to-ask
 [awesome python]: https://python.libhunt.com/

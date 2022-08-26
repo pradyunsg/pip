@@ -5,9 +5,9 @@
 ```
 
 Modern Python packages can contain a `pyproject.toml` file, first introduced in
-{pep}`518` and later expanded in {pep}`517`, {pep}`621` and {pep}`660`.
-This file contains build system requirements and information, which are used by
-pip to build the package.
+{pep}`518` and later expanded in {pep}`517`, {pep}`621` and {pep}`660`. This
+file contains build system requirements and information, which are used by pip
+to build the package.
 
 ## Build process
 
@@ -29,8 +29,8 @@ that build requirements are handled independently of the user's runtime
 environment.
 
 For example, a project that needs an older version of setuptools to build can
-still be installed, even if the user has an newer version installed (and
-without silently replacing that version).
+still be installed, even if the user has an newer version installed (and without
+silently replacing that version).
 
 ### Build-time dependencies
 
@@ -43,10 +43,10 @@ dependencies of a package.
 requires = ["setuptools ~= 58.0", "cython ~= 0.29.0"]
 ```
 
-It is also possible for a build backend to provide dynamically calculated
-build dependencies, using {pep}`517`'s `get_requires_for_build_wheel` hook. This
-hook will be called by pip, and dependencies it describes will also be installed
-in the build environment. For example, newer versions of setuptools expose the
+It is also possible for a build backend to provide dynamically calculated build
+dependencies, using {pep}`517`'s `get_requires_for_build_wheel` hook. This hook
+will be called by pip, and dependencies it describes will also be installed in
+the build environment. For example, newer versions of setuptools expose the
 contents of `setup_requires` to pip via this hook.
 
 Build-time requirement specifiers follow {pep}`508`, so it's possible to
@@ -67,10 +67,10 @@ Once the build environment has been created and populated with build-time
 dependencies, `pip` will usually need metadata about a package (name, version,
 dependencies, and more).
 
-If {pep}`517`'s `prepare_metadata_for_build_wheel` hook is provided by the
-build backend, that will be used to generate the packages' metadata. Otherwise,
-a wheel will be generated (as described below) and the metadata contained
-within such a wheel will be used.
+If {pep}`517`'s `prepare_metadata_for_build_wheel` hook is provided by the build
+backend, that will be used to generate the packages' metadata. Otherwise, a
+wheel will be generated (as described below) and the metadata contained within
+such a wheel will be used.
 
 ### Wheel Generation
 
@@ -78,10 +78,9 @@ within such a wheel will be used.
 
 ```
 
-For generating a wheel, pip uses the {pep}`517` `build_wheel` hook that has
-to be provided by the build backend. The build backend will generate a wheel,
-which may involve compiling extension code written in C/C++ (or other
-languages).
+For generating a wheel, pip uses the {pep}`517` `build_wheel` hook that has to
+be provided by the build backend. The build backend will generate a wheel, which
+may involve compiling extension code written in C/C++ (or other languages).
 
 Wheels generated using this mechanism can be [cached](wheel-caching) for reuse,
 to speed up future installations.
@@ -109,18 +108,18 @@ regular {ref}`deprecation policy <Deprecation Policy>`.
 ### Backend Configuration
 
 Build backends have the ability to accept configuration settings, which can
-change the way the build is handled. These settings take the form of a
-series of `key=value` pairs. The user can supply configuration settings
-using the `--config-settings` command line option (which can be supplied
-multiple times, in order to specify multiple settings).
+change the way the build is handled. These settings take the form of a series of
+`key=value` pairs. The user can supply configuration settings using the
+`--config-settings` command line option (which can be supplied multiple times,
+in order to specify multiple settings).
 
 The supplied configuration settings are passed to every backend hook call.
 
 ## Build output
 
-It is the responsibility of the build backend to ensure that the output is
-in the correct encoding, as described in {pep}`517`. This likely involves
-dealing with [the same challenges as pip has for legacy builds](build-output).
+It is the responsibility of the build backend to ensure that the output is in
+the correct encoding, as described in {pep}`517`. This likely involves dealing
+with [the same challenges as pip has for legacy builds](build-output).
 
 ## Fallback Behaviour
 
@@ -154,8 +153,8 @@ passed.
 As this feature was incrementally rolled out, there have been various notable
 changes and improvements in it.
 
-- setuptools 40.8.0 is the first version of setuptools that offers a
-  {pep}`517` backend that closely mimics directly executing `setup.py`.
+- setuptools 40.8.0 is the first version of setuptools that offers a {pep}`517`
+  backend that closely mimics directly executing `setup.py`.
 - Prior to pip 18.0, pip only supports installing build requirements from
   wheels, and does not support the use of environment markers and extras (only
   version specifiers are respected).

@@ -1,4 +1,5 @@
 (repeatability)=
+
 # Repeatable Installs
 
 pip can be used to achieve various levels of repeatable environments. This page
@@ -6,8 +7,8 @@ walks through increasingly stricter definitions of what "repeatable" means.
 
 ## Pinning the package versions
 
-Pinning package versions of your dependencies in the requirements file
-protects you from bugs or incompatibilities in newly released versions:
+Pinning package versions of your dependencies in the requirements file protects
+you from bugs or incompatibilities in newly released versions:
 
 ```
 SomePackage == 1.2.3
@@ -49,8 +50,8 @@ Hash-checking mode is a labour-saving alternative to running a private index
 server containing approved packages: it removes the need to upload packages,
 maintain ACLs, and keep an audit trail (which a VCS gives you on the
 requirements file for free). It can also substitute for a vendored library,
-providing easier upgrades and less VCS noise. It does not, of course,
-provide the availability benefits of a private index or a vendored library.
+providing easier upgrades and less VCS noise. It does not, of course, provide
+the availability benefits of a private index or a vendored library.
 
 [pip-tools] is a package that builds upon pip, and provides a good workflow for
 managing and generating requirements files.
@@ -83,9 +84,9 @@ $ python -m pip install --force-reinstall --no-index --no-deps $tempdir/*
 ```
 ````
 
-Note that such a wheelhouse contains compiled packages, which are typically
-OS and architecture-specific, so these archives are not necessarily portable
-across machines.
+Note that such a wheelhouse contains compiled packages, which are typically OS
+and architecture-specific, so these archives are not necessarily portable across
+machines.
 
 Hash-checking mode can also be used along with this method (since this uses a
 requirements file as well), to ensure that future archives are built with

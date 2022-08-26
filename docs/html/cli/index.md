@@ -1,7 +1,7 @@
 # Commands
 
-The general options that apply to all the commands listed below can be
-found [under the `pip` page in this section](pip).
+The general options that apply to all the commands listed below can be found
+[under the `pip` page in this section](pip).
 
 ```{toctree}
 :maxdepth: 1

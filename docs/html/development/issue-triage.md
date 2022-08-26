@@ -8,13 +8,13 @@ just submit a pull request and mention it in that tracking issue.
 
 # Issue Triage
 
-This serves as an introduction to issue tracking in pip as well as
-how to help triage reported issues.
+This serves as an introduction to issue tracking in pip as well as how to help
+triage reported issues.
 
 ## Issue Tracker
 
-The [pip issue tracker](https://github.com/pypa/pip/issues) is hosted on
-GitHub alongside the project.
+The [pip issue tracker](https://github.com/pypa/pip/issues) is hosted on GitHub
+alongside the project.
 
 Currently, the issue tracker is used for bugs, feature requests, and general
 user support.
@@ -33,40 +33,32 @@ Issue labels are used to:
 The current set of labels are divided into several categories identified by
 prefix:
 
-**C - Category**
-: which area of `pip` functionality a feature request or issue is related to
+**C - Category** : which area of `pip` functionality a feature request or issue
+is related to
 
-**K - Kind**
-**O - Operating System**
-: for issues that are OS-specific
+**K - Kind** **O - Operating System** : for issues that are OS-specific
 
-**P - Project/Platform**
-: related to something external to `pip`
+**P - Project/Platform** : related to something external to `pip`
 
-**R - Resolution**
-: no more discussion is really needed, an action has been identified and the
-issue is waiting or closed
+**R - Resolution** : no more discussion is really needed, an action has been
+identified and the issue is waiting or closed
 
-**S - State**
-: for some automatic labels and other indicators that work is needed
+**S - State** : for some automatic labels and other indicators that work is
+needed
 
-**type**
-: the role or flavor of an issue
+**type** : the role or flavor of an issue
 
 The specific labels falling into each category have a description that can be
 seen on the [Labels](https://github.com/pypa/pip/labels) page.
 
 In addition, there are several standalone labels:
 
-**good first issue**
-: this label marks an issue as beginner-friendly and shows up in banners that
-GitHub displays for first-time visitors to the repository
+**good first issue** : this label marks an issue as beginner-friendly and shows
+up in banners that GitHub displays for first-time visitors to the repository
 
-**triage**
-: default label given to issues when they are created
+**triage** : default label given to issues when they are created
 
-**trivial**
-: special label for pull requests that removes the
+**trivial** : special label for pull requests that removes the
 {ref}`news file requirement <choosing-news-entry-type>`
 
 **needs rebase or merge**
@@ -78,10 +70,9 @@ conflicts
 
 There are several helpers to manage issues and pull requests.
 
-Issues created on the issue tracker are automatically given the
-`triage` label by the
-[triage-new-issues](https://github.com/apps/triage-new-issues)
-bot. The label is automatically removed when another label is added.
+Issues created on the issue tracker are automatically given the `triage` label
+by the [triage-new-issues](https://github.com/apps/triage-new-issues) bot. The
+label is automatically removed when another label is added.
 
 When an issue needs feedback from the author we can label it with
 `S: awaiting response`. When the author responds, the
@@ -120,33 +111,32 @@ Specifically, to address an issue:
 5. Search for or remember related issues and link to them
 6. Identify an appropriate area of concern (if applicable)
 
-Keep in mind that all communication is happening with other people and
-should be done with respect per the
+Keep in mind that all communication is happening with other people and should be
+done with respect per the
 [Code of Conduct](https://www.pypa.io/en/latest/code-of-conduct/).
 
 The lifecycle of an issue (bug or support) generally looks like:
 
 1. waiting for triage (marked with label `triage`)
 
-2. confirming issue - some discussion with the user, gathering
-   details, trying to reproduce the issue (may be marked with a specific
-   category, `S: awaiting-response`, `S: discussion-needed`, or
-   `S: need-repro`)
+2. confirming issue - some discussion with the user, gathering details, trying
+   to reproduce the issue (may be marked with a specific category,
+   `S: awaiting-response`, `S: discussion-needed`, or `S: need-repro`)
 
 3. confirmed - the issue is pretty consistently reproducible in a
    straightforward way, or a mechanism that could be causing the issue has been
    identified
 
-4. awaiting fix - the fix is identified and no real discussion on the issue
-   is needed, should be marked `R: awaiting PR`
+4. awaiting fix - the fix is identified and no real discussion on the issue is
+   needed, should be marked `R: awaiting PR`
 
 5. closed - can be for several reasons
 
    - fixed
-   - could not be reproduced, no more details could be obtained, and no
-     progress can be made
-   - actual issue was with another project or related to system
-     configuration and pip cannot (or will not) be adapted for it
+   - could not be reproduced, no more details could be obtained, and no progress
+     can be made
+   - actual issue was with another project or related to system configuration
+     and pip cannot (or will not) be adapted for it
 
 ### Requesting information
 
@@ -167,16 +157,17 @@ depending on the situation:
 - `PATH` environment variable
 - Network situation (e.g. airgapped environment, firewalls)
 - `--verbose` output of a failing command
-- (Unix) `strace` output from a failing command (be careful not to output
-  into the same directory as a package that's being installed, otherwise pip
-  will loop forever copying the log file...)
+- (Unix) `strace` output from a failing command (be careful not to output into
+  the same directory as a package that's being installed, otherwise pip will
+  loop forever copying the log file...)
 - (Windows)
   [procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon)
   output during a failing command
   ([example request](https://github.com/pypa/pip/issues/6814#issuecomment-516611389))
-- Listing of files relevant to the issue (e.g. `ls -l venv/lib/pythonX.Y/problem-package.dist-info/`)
-- whether the unexpected behavior ever worked as expected - if so then what
-  were the details of the setup (same information as above)
+- Listing of files relevant to the issue (e.g.
+  `ls -l venv/lib/pythonX.Y/problem-package.dist-info/`)
+- whether the unexpected behavior ever worked as expected - if so then what were
+  the details of the setup (same information as above)
 
 Generally, information is good to request if it can help confirm or rule out
 possible sources of error. We shouldn't request information that does not
@@ -184,24 +175,25 @@ improve our understanding of the situation.
 
 ### Reproducing issues
 
-Whenever an issue happens and the cause isn't obvious, it is important
-that we be able to reproduce it independently. This serves several purposes:
+Whenever an issue happens and the cause isn't obvious, it is important that we
+be able to reproduce it independently. This serves several purposes:
 
-1. If it is a pip bug, then any fix will need tests - a good reproducer
-   is most of the way towards that.
-2. If it is not reproducible using the provided instructions, that helps
-   rule out a lot of possible causes.
-3. A clear set of instructions is an easy way to get on the same page as
-   someone reporting an issue.
+1. If it is a pip bug, then any fix will need tests - a good reproducer is most
+   of the way towards that.
+2. If it is not reproducible using the provided instructions, that helps rule
+   out a lot of possible causes.
+3. A clear set of instructions is an easy way to get on the same page as someone
+   reporting an issue.
 
 The best way to reproduce an issue is with a script.
 
-A script can be copied into a file and executed, whereas shell output
-has to be manually copied a line at a time.
+A script can be copied into a file and executed, whereas shell output has to be
+manually copied a line at a time.
 
 Scripts to reproduce issues should be:
 
-- portable (few/no assumptions about the system, other that it being Unix or Windows as applicable)
+- portable (few/no assumptions about the system, other that it being Unix or
+  Windows as applicable)
 - non-destructive
 - convenient
 - require little/no setup on the part of the runner
@@ -226,8 +218,8 @@ Examples:
 ### Reaching resolution
 
 Some user support questions are more related to system configuration than pip.
-It's important to treat these issues with the same care and attention as
-others, specifically:
+It's important to treat these issues with the same care and attention as others,
+specifically:
 
 1. Unless the issue is very old and the user doesn't seem active, wait for
    confirmation before closing the issue
@@ -236,24 +228,23 @@ others, specifically:
 
    - For Ubuntu, [askubuntu](https://askubuntu.com/)
    - For Other linuxes/unixes, [serverfault](https://serverfault.com/)
-   - For network connectivity issues,
-     [serverfault](https://serverfault.com/)
+   - For network connectivity issues, [serverfault](https://serverfault.com/)
 
 3. Just because a user support question is best solved using some other forum
-   doesn't mean that we can't make things easier. Try to extract and
-   understand from the user query how things could have been made easier for
-   them or you, for example with better warning or error messages. If an issue
-   does not exist covering that case then create one. If an issue does exist then
-   make sure to reference that issue before closing this one.
+   doesn't mean that we can't make things easier. Try to extract and understand
+   from the user query how things could have been made easier for them or you,
+   for example with better warning or error messages. If an issue does not exist
+   covering that case then create one. If an issue does exist then make sure to
+   reference that issue before closing this one.
 
 4. A user may be having trouble installing a package, where the package
    `setup.py` or build-backend configuration is non-trivial. In these cases we
-   can help to troubleshoot but the best advice is going to be to direct them
-   to the support channels for the related projects.
+   can help to troubleshoot but the best advice is going to be to direct them to
+   the support channels for the related projects.
 
-5. Do not be hasty to assume it is one cause or another. What looks like
-   someone else's problem may still be an issue in pip or at least something
-   that could be improved.
+5. Do not be hasty to assume it is one cause or another. What looks like someone
+   else's problem may still be an issue in pip or at least something that could
+   be improved.
 
 6. For general discussion on Python packaging:
 
@@ -264,29 +255,27 @@ others, specifically:
 
 An issue may be considered resolved and closed when:
 
-- for each possible improvement or problem represented in the issue
-  discussion:
+- for each possible improvement or problem represented in the issue discussion:
 
-  - Consensus has been reached on a specific action and the actions
-    appear to be external to the project, with no follow up needed
-    in the project afterwards.
+  - Consensus has been reached on a specific action and the actions appear to be
+    external to the project, with no follow up needed in the project afterwards.
 
     - PEP updates (with a corresponding issue in
       [python/peps](https://github.com/python/peps))
     - already tracked by another issue
 
-  - A project-specific issue has been identified and the issue no
-    longer occurs as of the latest commit on the main branch.
+  - A project-specific issue has been identified and the issue no longer occurs
+    as of the latest commit on the main branch.
 
-- An enhancement or feature request no longer has a proponent and the maintainers
-  don't think it's worth keeping open.
+- An enhancement or feature request no longer has a proponent and the
+  maintainers don't think it's worth keeping open.
 
-- An issue has been identified as a duplicate, and it is clearly a duplicate (i.e. the
-  original report was very good and points directly to the issue)
+- An issue has been identified as a duplicate, and it is clearly a duplicate
+  (i.e. the original report was very good and points directly to the issue)
 
-- The issue has been fixed, and can be independently validated as no longer being an
-  issue. If this is with code then the specific change/PR that led to it should be
-  identified and posted for tracking.
+- The issue has been fixed, and can be independently validated as no longer
+  being an issue. If this is with code then the specific change/PR that led to
+  it should be identified and posted for tracking.
 
 ## Common issues
 
@@ -305,13 +294,14 @@ An issue may be considered resolved and closed when:
 
 ## For issues caused by changes by redistributors
 
-Certain issues are caused by patches that redistributors of Python/pip
-make to Python/pip.
+Certain issues are caused by patches that redistributors of Python/pip make to
+Python/pip.
 
-Certain redistributors have shared preferred wording to redirect users
-to their issue trackers.
+Certain redistributors have shared preferred wording to redirect users to their
+issue trackers.
 
-Fedora, RHEL, CentOS (and probably other derivatives – Rocky, Scientific, CloudLinux):
+Fedora, RHEL, CentOS (and probably other derivatives – Rocky, Scientific,
+CloudLinux):
 
 ```
 This issue looks like it's caused by changes that Fedora or Red Hat
