@@ -6,7 +6,7 @@ import logging
 import warnings
 from typing import Any, Optional, TextIO, Type, Union
 
-from pip._vendor.packaging.version import parse
+from pip._vendor.packaging.version import parse as parse_version
 
 from pip import __version__ as current_version  # NOTE: tests patch this name.
 
@@ -81,7 +81,10 @@ def deprecated(
     """
 
     # Determine whether or not the feature is already gone in this version.
-    is_gone = gone_in is not None and parse(current_version) >= parse(gone_in)
+    if gone_in is None:
+        is_gone = False
+    else:
+        is_gone = parse_version(current_version) >= parse_version(gone_in)
 
     message_parts = [
         (reason, f"{DEPRECATION_MSG_PREFIX}{{}}"),
