@@ -159,6 +159,12 @@ To build it locally, run:
 
 The built documentation can be found in the ``docs/build`` folder.
 
+It is also possible to view the HTML documentation with a live reloading preview by running:
+
+.. code-block:: console
+
+    $ nox -s docs-live
+
 For each Pull Request made the documentation is deployed following this link:
 
 .. code-block:: none
