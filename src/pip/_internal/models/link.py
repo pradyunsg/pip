@@ -70,18 +70,6 @@ class LinkHash:
         assert self.name in _SUPPORTED_HASHES
 
     @classmethod
-    def parse_pep658_hash(cls, dist_info_metadata: str) -> Optional["LinkHash"]:
-        """Parse a PEP 658 data-dist-info-metadata hash."""
-        if dist_info_metadata == "true":
-            return None
-        name, sep, value = dist_info_metadata.partition("=")
-        if not sep:
-            return None
-        if name not in _SUPPORTED_HASHES:
-            return None
-        return cls(name=name, value=value)
-
-    @classmethod
     @functools.lru_cache(maxsize=None)
     def find_hash_url_fragment(cls, url: str) -> Optional["LinkHash"]:
         """Search a string for a checksum algorithm name and encoded output value."""
@@ -190,7 +178,7 @@ class Link(KeyBasedCompareMixin):
         comes_from: Optional[Union[str, "IndexContent"]] = None,
         requires_python: Optional[str] = None,
         yanked_reason: Optional[str] = None,
-        dist_info_metadata: Optional[str] = None,
+        dist_info_metadata: Optional[Union[bool, LinkHash]] = None,
         cache_link_parsing: bool = True,
         hashes: Optional[Mapping[str, str]] = None,
     ) -> None:
@@ -208,11 +196,9 @@ class Link(KeyBasedCompareMixin):
             a simple repository HTML link. If the file has been yanked but
             no reason was provided, this should be the empty string. See
             PEP 592 for more information and the specification.
-        :param dist_info_metadata: the metadata attached to the file, or None if no such
-            metadata is provided. This is the value of the "data-dist-info-metadata"
-            attribute, if present, in a simple repository HTML link. This may be parsed
-            into its own `Link` by `self.metadata_link()`. See PEP 658 for more
-            information and the specification.
+        :param dist_info_metadata: the metadata file associated with this link,
+            or None if no such metadata is provided. If an associated link hash
+            is provided, it shall be utilized.
         :param cache_link_parsing: A flag that is used elsewhere to determine
             whether resources retrieved from this link should be cached. PyPI
             URLs should generally have this set to False, for example.
@@ -262,8 +248,25 @@ class Link(KeyBasedCompareMixin):
         url = _ensure_quoted_url(urllib.parse.urljoin(page_url, file_url))
         pyrequire = file_data.get("requires-python")
         yanked_reason = file_data.get("yanked")
-        dist_info_metadata = file_data.get("dist-info-metadata")
+        raw_dist_info_metadata = file_data.get("dist-info-metadata")
         hashes = file_data.get("hashes", {})
+
+        dist_info_metadata: Optional[Union[bool, LinkHash]]
+        if raw_dist_info_metadata is None:
+            dist_info_metadata = None
+        elif isinstance(raw_dist_info_metadata, bool):
+            dist_info_metadata = raw_dist_info_metadata
+        elif not isinstance(raw_dist_info_metadata, dict):
+            # TODO: Consider adding a warning here?
+            dist_info_metadata = None
+        else:
+            for name in _SUPPORTED_HASHES:
+                if name in raw_dist_info_metadata:
+                    value = raw_dist_info_metadata[name]
+                    dist_info_metadata = LinkHash(name, value)
+                    break
+            else:
+                dist_info_metadata = None
 
         # The Link.yanked_reason expects an empty string instead of a boolean.
         if yanked_reason and not isinstance(yanked_reason, str):
@@ -298,7 +301,23 @@ class Link(KeyBasedCompareMixin):
         url = _ensure_quoted_url(urllib.parse.urljoin(base_url, href))
         pyrequire = anchor_attribs.get("data-requires-python")
         yanked_reason = anchor_attribs.get("data-yanked")
-        dist_info_metadata = anchor_attribs.get("data-dist-info-metadata")
+        raw_dist_info_metadata = anchor_attribs.get("data-dist-info-metadata")
+
+        dist_info_metadata: Optional[Union[bool, LinkHash]]
+        if raw_dist_info_metadata is None:
+            dist_info_metadata = None
+        elif raw_dist_info_metadata == "true":
+            dist_info_metadata = True
+        else:
+            name, sep, value = raw_dist_info_metadata.partition("=")
+            if not sep:
+                # TODO: Consider adding a warning here?
+                dist_info_metadata = None
+            elif name not in _SUPPORTED_HASHES:
+                # TODO: Consider adding a warning here?
+                dist_info_metadata = None
+            else:
+                dist_info_metadata = LinkHash(name, value)
 
         return cls(
             url,
@@ -414,10 +433,9 @@ class Link(KeyBasedCompareMixin):
         if self.dist_info_metadata is None:
             return None
         metadata_url = f"{self.url_without_fragment}.metadata"
-        metadata_link_hash = LinkHash.parse_pep658_hash(self.dist_info_metadata)
-        if metadata_link_hash is None:
+        if isinstance(self.dist_info_metadata, bool):
             return Link(metadata_url)
-        return Link(metadata_url, hashes=metadata_link_hash.as_dict())
+        return Link(metadata_url, hashes=self.dist_info_metadata.as_dict())
 
     def as_hashes(self) -> Hashes:
         return Hashes({k: [v] for k, v in self._hashes.items()})

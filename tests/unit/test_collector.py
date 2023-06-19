@@ -527,7 +527,7 @@ def test_parse_links_json() -> None:
             requires_python=">=3.7",
             yanked_reason=None,
             hashes={"sha256": "sha256 hash", "blake2b": "blake2b hash"},
-            dist_info_metadata="sha512=aabdd41",
+            dist_info_metadata=LinkHash("sha512", "aabdd41"),
         ),
     ]
 
@@ -592,13 +592,13 @@ _pkg1_requirement = Requirement("pkg1==1.0")
         # Test with a provided hash value.
         (
             '<a href="/pkg1-1.0.tar.gz" data-dist-info-metadata="sha256=aa113592bbe"></a>',  # noqa: E501
-            "sha256=aa113592bbe",
+            LinkHash("sha256", "aa113592bbe"),
             {},
         ),
         # Test with a provided hash value for both the requirement as well as metadata.
         (
             '<a href="/pkg1-1.0.tar.gz#sha512=abc132409cb" data-dist-info-metadata="sha256=aa113592bbe"></a>',  # noqa: E501
-            "sha256=aa113592bbe",
+            LinkHash("sha256", "aa113592bbe"),
             {"sha512": "abc132409cb"},
         ),
     ],
@@ -1077,20 +1077,3 @@ def test_link_collector_create_find_links_expansion(
 )
 def test_link_hash_parsing(url: str, result: Optional[LinkHash]) -> None:
     assert LinkHash.find_hash_url_fragment(url) == result
-
-
-@pytest.mark.parametrize(
-    "dist_info_metadata, result",
-    [
-        ("sha256=aa113592bbe", LinkHash("sha256", "aa113592bbe")),
-        ("sha256=", LinkHash("sha256", "")),
-        ("sha500=aa113592bbe", None),
-        ("true", None),
-        ("", None),
-        ("aa113592bbe", None),
-    ],
-)
-def test_pep658_hash_parsing(
-    dist_info_metadata: str, result: Optional[LinkHash]
-) -> None:
-    assert LinkHash.parse_pep658_hash(dist_info_metadata) == result
