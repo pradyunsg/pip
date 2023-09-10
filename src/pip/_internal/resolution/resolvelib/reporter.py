@@ -1,5 +1,4 @@
 from collections import defaultdict
-from logging import getLogger
 from typing import Any, DefaultDict
 
 from pip._vendor.resolvelib.reporters import BaseReporter
@@ -52,7 +51,7 @@ class PipReporter(BaseReporter):
             else:
                 msg += "The user requested "
             msg += req.format_for_error()
-        logger.debug(msg)
+        logger.verbose(msg)
 
 
 class PipDebuggingReporter(BaseReporter):

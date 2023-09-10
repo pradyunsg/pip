@@ -16,6 +16,7 @@ from pip._vendor.resolvelib.providers import AbstractProvider
 from .base import Candidate, Constraint, Requirement
 from .candidates import REQUIRES_PYTHON_IDENTIFIER
 from .factory import Factory
+from .requirements import ExplicitRequirement
 
 if TYPE_CHECKING:
     from pip._vendor.resolvelib.providers import Preference
@@ -121,6 +122,7 @@ class PipProvider(_ProviderBase):
 
         * Prefer if any of the known requirements is "direct", e.g. points to an
           explicit URL.
+        * If equal, prefer if any requirement that is coupled with a candidate.
         * If equal, prefer if any requirement is "pinned", i.e. contains
           operator ``===`` or ``==``.
         * If equal, calculate an approximate "depth" and resolve requirements
@@ -184,9 +186,18 @@ class PipProvider(_ProviderBase):
         # the backtracking
         backtrack_cause = self.is_backtrack_cause(identifier, backtrack_causes)
 
+        # Prefer backtracking on ExplicitRequirement objects, since they have
+        # only one possible candidate and this avoids backtracking on unrelated
+        # candidates when these are involved.
+        is_explicit_requirement = any(
+            isinstance(r.requirement, ExplicitRequirement)
+            for r in information[identifier]
+        )
+
         return (
             not requires_python,
             not direct,
+            not is_explicit_requirement,
             not pinned,
             not backtrack_cause,
             inferred_depth,
